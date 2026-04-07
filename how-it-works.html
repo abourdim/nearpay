@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NearPay — Comment ça marche vraiment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07070F;--bg2:#0F0F1C;--bg3:#161626;--bg4:#1C1C30;
+  --gold:#C9A84C;--gold-l:#E8D5A3;--gold-d:#8B6914;
+  --text:#F0EDE6;--muted:#8A8070;
+  --blue:#4C8EC9;--teal:#4CC9A8;--orange:#F97316;--purple:#A78BFA;--green:#22C55E;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.65;overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--gold-d);border-radius:3px;}
+
+.bismillah{text-align:center;padding:24px 20px 16px;font-family:'Amiri',serif;font-size:clamp(22px,4vw,46px);color:var(--gold);background:linear-gradient(180deg,rgba(201,168,76,.1),transparent);}
+.bismillah::after{content:'';display:block;width:90px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:12px auto 0;}
+
+nav{position:sticky;top:0;z-index:200;backdrop-filter:blur(20px);background:rgba(7,7,15,.92);border-bottom:1px solid rgba(201,168,76,.1);height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--gold);}
+.logo span{color:var(--text);}
+.nav-links{display:flex;gap:4px;}
+.nav-link{padding:6px 14px;border-radius:8px;font-size:13px;color:var(--muted);text-decoration:none;transition:all .3s;border:1px solid transparent;}
+.nav-link:hover{color:var(--text);border-color:rgba(255,255,255,.08);}
+.nav-link.active{color:var(--gold);border-color:rgba(201,168,76,.25);background:rgba(201,168,76,.06);}
+
+/* ── LAYOUT ── */
+.wrap{max-width:1100px;margin:0 auto;padding:0 24px;}
+section{padding:80px 0;}
+.section-tag{display:inline-block;padding:4px 14px;border-radius:50px;border:1px solid rgba(201,168,76,.28);background:rgba(201,168,76,.06);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,4.5vw,54px);font-weight:700;margin-bottom:12px;line-height:1.1;}
+.section-sub{color:var(--muted);font-size:16px;font-weight:300;max-width:580px;line-height:1.7;}
+.divider{width:70px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:18px 0;}
+.gold-text{background:linear-gradient(135deg,var(--gold-d),var(--gold),var(--gold-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* ── HERO ── */
+.hero{padding:60px 0 40px;text-align:center;}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,6vw,80px);font-weight:700;line-height:1.05;margin-bottom:20px;}
+.hero h1 em{color:var(--gold);font-style:italic;}
+.hero p{color:var(--muted);font-size:18px;font-weight:300;max-width:600px;margin:0 auto 40px;}
+.hero-pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.pill{padding:6px 16px;border-radius:50px;border:1px solid rgba(255,255,255,.1);font-size:12px;color:var(--muted);}
+
+/* ── THE CORE PRINCIPLE ── */
+.principle-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:40px;}
+.principle-box{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:32px;}
+.principle-box h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:12px;}
+.principle-box p{color:var(--muted);font-size:14px;line-height:1.7;}
+.p-highlight{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.18);border-radius:12px;padding:20px;margin-top:16px;}
+.p-highlight code{font-family:'DM Mono',monospace;font-size:12px;color:var(--gold-l);background:rgba(0,0,0,.3);padding:2px 7px;border-radius:4px;}
+
+/* ── ANIMATED FLOW DIAGRAM ── */
+.flow-diagram{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:48px 32px;margin-top:40px;position:relative;overflow:hidden;}
+.flow-diagram::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.05),transparent 60%);pointer-events:none;}
+.flow-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;text-align:center;margin-bottom:36px;color:var(--gold-l);}
+
+/* Flow nodes */
+.flow-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.flow-node{
+  padding:12px 20px;border-radius:12px;text-align:center;
+  min-width:120px;position:relative;
+  transition:all .4s var(--ease);
+}
+.flow-node.active{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.4);}
+.fn-badge{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.28);color:var(--gold);}
+.fn-phone{background:rgba(76,142,201,.1);border:1px solid rgba(76,142,201,.25);color:var(--blue);}
+.fn-api{background:rgba(76,201,168,.1);border:1px solid rgba(76,201,168,.22);color:var(--teal);}
+.fn-pos{background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.22);color:var(--orange);}
+.fn-pay{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.22);color:var(--purple);}
+.fn-kitchen{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.22);color:var(--green);}
+.fn-emoji{font-size:22px;margin-bottom:4px;}
+.fn-name{font-size:12px;font-weight:600;}
+.fn-detail{font-size:10px;opacity:.6;margin-top:2px;}
+
+.flow-arrow{color:rgba(255,255,255,.2);font-size:20px;flex-shrink:0;}
+.flow-arrow.vertical{display:flex;justify-content:center;font-size:24px;margin:4px 0;color:rgba(255,255,255,.15);}
+
+/* Animated data packet */
+.data-packet{
+  display:inline-block;padding:3px 10px;border-radius:50px;
+  font-size:10px;font-family:'DM Mono',monospace;
+  background:rgba(201,168,76,.15);color:var(--gold);
+  border:1px solid rgba(201,168,76,.25);
+  margin:0 4px;
+  animation:packetFloat 2s ease-in-out infinite;
+}
+.data-packet.blue{background:rgba(76,142,201,.15);color:var(--blue);border-color:rgba(76,142,201,.25);animation-delay:.4s;}
+.data-packet.teal{background:rgba(76,201,168,.12);color:var(--teal);border-color:rgba(76,201,168,.22);animation-delay:.8s;}
+.data-packet.green{background:rgba(34,197,94,.12);color:var(--green);border-color:rgba(34,197,94,.2);animation-delay:.2s;}
+
+/* ── STEP BY STEP SCENARIOS ── */
+.scenario-tabs{display:flex;gap:4px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:4px;margin-bottom:32px;overflow-x:auto;}
+.sc-tab{padding:8px 20px;border-radius:9px;border:none;background:transparent;color:var(--muted);font-size:13px;cursor:pointer;transition:all .3s var(--ease);white-space:nowrap;font-family:'DM Sans',sans-serif;}
+.sc-tab.on{background:var(--gold);color:#000;font-weight:600;}
+.sc-panel{display:none;}
+.sc-panel.on{display:block;animation:fadeUp .4s var(--ease);}
+
+/* Step timeline */
+.timeline{position:relative;padding-left:40px;}
+.timeline::before{content:'';position:absolute;left:14px;top:8px;bottom:8px;width:2px;background:linear-gradient(180deg,var(--gold),rgba(201,168,76,.1));}
+.tl-step{position:relative;margin-bottom:32px;opacity:0;transform:translateX(-10px);transition:all .5s var(--ease);}
+.tl-step.vis{opacity:1;transform:translateX(0);}
+.tl-dot{
+  position:absolute;left:-33px;top:4px;
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;
+  border:2px solid var(--gold);background:var(--bg);
+  color:var(--gold);flex-shrink:0;z-index:2;
+}
+.tl-step.done .tl-dot{background:var(--gold);color:#000;}
+.tl-title{font-size:16px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.tl-who{font-size:11px;padding:2px 10px;border-radius:50px;font-weight:500;}
+.who-client{background:rgba(76,142,201,.12);color:var(--blue);border:1px solid rgba(76,142,201,.2);}
+.who-server{background:rgba(249,115,22,.1);color:var(--orange);border:1px solid rgba(249,115,22,.18);}
+.who-system{background:rgba(76,201,168,.1);color:var(--teal);border:1px solid rgba(76,201,168,.2);}
+.who-kitchen{background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.18);}
+.tl-desc{color:var(--muted);font-size:14px;line-height:1.65;margin-bottom:10px;}
+.tl-visual{background:var(--bg3);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 16px;font-size:13px;}
+.tl-code{background:rgba(0,0,0,.4);border:1px solid rgba(76,142,201,.15);border-radius:8px;padding:12px 14px;font-family:'DM Mono',monospace;font-size:11px;color:#A8D4F5;line-height:1.7;margin-top:8px;overflow-x:auto;}
+
+/* ── SPLIT VIEW ── */
+.split-view{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:32px;}
+.sv-panel{background:var(--bg2);border-radius:14px;padding:24px;border:1px solid rgba(255,255,255,.06);}
+.sv-panel h4{font-size:13px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.sv-label{display:inline-block;padding:2px 10px;border-radius:50px;font-size:11px;}
+.sv-steps{display:flex;flex-direction:column;gap:10px;}
+.sv-step{display:flex;align-items:flex-start;gap:10px;font-size:13px;}
+.sv-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;}
+.sv-txt{color:var(--muted);line-height:1.5;}
+.sv-txt strong{color:var(--text);}
+
+/* ── RECEIPT SECTION ── */
+.receipt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:32px;}
+.receipt-card{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden;transition:all .4s var(--ease);}
+.receipt-card:hover{transform:translateY(-4px);border-color:rgba(201,168,76,.2);}
+.rc-header{padding:20px;background:linear-gradient(135deg,var(--bg3),var(--bg2));}
+.rc-header h3{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:4px;}
+.rc-header p{font-size:12px;color:var(--muted);}
+.rc-body{padding:20px;}
+.rc-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;}
+.rc-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+.rc-txt{font-size:13px;color:var(--muted);line-height:1.5;}
+.rc-txt strong{color:var(--text);display:block;margin-bottom:2px;}
+.rc-preview{background:var(--bg3);border-radius:10px;padding:14px;margin-top:16px;font-size:12px;}
+.rc-preview-title{font-weight:600;margin-bottom:8px;color:var(--gold-l);}
+.rc-line{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);color:var(--muted);}
+.rc-line:last-child{border:none;font-weight:700;color:var(--text);padding-top:8px;}
+
+/* ── FAQ SECTION ── */
+.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:32px;}
+.faq-box{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:24px;cursor:pointer;transition:all .35s var(--ease);}
+.faq-box:hover{border-color:rgba(201,168,76,.2);transform:translateY(-2px);}
+.faq-box h4{font-size:15px;font-weight:600;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+.faq-box p{font-size:13px;color:var(--muted);line-height:1.65;display:none;}
+.faq-box.open p{display:block;}
+.faq-box.open h4{color:var(--gold-l);}
+.faq-arrow{color:var(--gold);font-size:16px;transition:transform .3s;}
+.faq-box.open .faq-arrow{transform:rotate(45deg);}
+
+/* ── INTERACTIVE DEMO ── */
+.demo-box{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:20px;padding:40px;margin-top:32px;}
+.demo-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;}
+.demo-btn{padding:8px 20px;border-radius:50px;border:1px solid rgba(255,255,255,.1);background:transparent;color:var(--muted);font-size:12px;cursor:pointer;transition:all .3s;font-family:'DM Sans',sans-serif;}
+.demo-btn.on{background:var(--gold);color:#000;border-color:var(--gold);font-weight:600;}
+
+/* Flow animation stage */
+.flow-stage{position:relative;height:280px;background:rgba(0,0,0,.25);border-radius:14px;border:1px solid rgba(255,255,255,.05);overflow:hidden;}
+.flow-actor{position:absolute;text-align:center;transition:all .5s var(--ease);}
+.actor-icon{font-size:32px;margin-bottom:6px;}
+.actor-name{font-size:11px;color:var(--muted);}
+.actor-badge{font-size:9px;padding:2px 8px;border-radius:50px;margin-top:3px;display:inline-block;}
+
+/* Data packet moving across */
+.moving-packet{
+  position:absolute;padding:4px 12px;border-radius:50px;
+  font-size:10px;font-family:'DM Mono',monospace;
+  font-weight:500;white-space:nowrap;
+  opacity:0;pointer-events:none;z-index:10;
+  transition:none;
+}
+.flow-log{background:rgba(0,0,0,.4);border-radius:10px;padding:14px;margin-top:16px;max-height:180px;overflow-y:auto;font-family:'DM Mono',monospace;font-size:11px;line-height:2;}
+.log-line{color:var(--muted);border-bottom:1px solid rgba(255,255,255,.03);padding:2px 0;}
+.log-line .log-ts{color:rgba(255,255,255,.2);margin-right:10px;}
+.log-line .log-actor{margin-right:8px;}
+.log-line .log-msg{color:var(--text-muted);}
+.log-line.success .log-msg{color:var(--green);}
+.log-line.warn .log-msg{color:var(--gold);}
+.log-line.info .log-msg{color:var(--blue);}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes packetFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+@keyframes slideRight{from{left:var(--from);opacity:0;}50%{opacity:1;}to{left:var(--to);opacity:0;}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+.fi{opacity:0;transform:translateY(24px);transition:opacity .6s var(--ease),transform .6s var(--ease);}
+.fi.vis{opacity:1;transform:translateY(0);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .principle-grid,.split-view,.faq-grid{grid-template-columns:1fr;}
+  .flow-row{gap:6px;}
+  .flow-node{min-width:90px;padding:10px 12px;}
+  .fn-detail{display:none;}
+  section{padding:56px 0;}
+}
+</style>
+</head>
+<body>
+
+<div class="bismillah" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+
+<nav>
+  <div class="logo">Near<span>Pay</span></div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">← Accueil</a>
+    <a href="demo.html" class="nav-link">🎬 Démo</a>
+    <a href="how-it-works.html" class="nav-link active">⚙️ Comment ça marche</a>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
+<div class="wrap">
+  <div class="hero fi">
+    <div class="section-tag">Transparence totale</div>
+    <h1>Comment NearPay<br>fonctionne <em>vraiment</em></h1>
+    <p>Le badge ne sait rien. Le POS sait tout. L'API fait le lien. Voici chaque octet, chaque étape, chaque décision.</p>
+    <div class="hero-pills">
+      <span class="pill">🏷️ Le badge est "bête"</span>
+      <span class="pill">🧠 Le POS est le cerveau</span>
+      <span class="pill">⚡ L'API est le lien</span>
+      <span class="pill">🔒 PCI DSS Level 1</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     LE PRINCIPE FONDAMENTAL
+══════════════════════════════════════ -->
+<div class="wrap">
+  <section class="fi">
+    <div class="section-tag">Le principe</div>
+    <h2 class="section-title">Le badge ne sait rien.<br>Et c'est <span class="gold-text">voulu</span>.</h2>
+    <div class="divider"></div>
+    <p class="section-sub">La plupart des gens pensent que le badge contient l'addition. C'est faux. Il contient juste une adresse — comme une plaque de rue qui dit "je suis TABLE-12". Toute la logique est côté serveur.</p>
+
+    <div class="principle-grid">
+      <div class="principle-box fi">
+        <h3>🏷️ Ce que le badge contient</h3>
+        <p>Un badge NFC NTAG213 de 144 octets. La quasi-totalité est vide. On y écrit une seule chose : une URL sécurisée.</p>
+        <div class="p-highlight">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Contenu réel du badge :</div>
+          <code>https://pay.nearpay.io/t/TABLE-12?sig=a3f9b2c1</code>
+          <div style="font-size:11px;color:var(--muted);margin-top:8px;">C'est tout. 144 octets. Pas d'addition, pas de prix, pas de menu.</div>
+        </div>
+        <div style="margin-top:16px;">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Pourquoi c'est mieux :</div>
+          <div style="font-size:13px;color:var(--text);line-height:1.8;">
+            ✅ L'addition change en temps réel (nouvelles commandes)<br>
+            ✅ Le badge ne se "périme" jamais<br>
+            ✅ Aucune donnée sensible sur l'objet physique<br>
+            ✅ Si le badge est perdu, zéro risque
+          </div>
+        </div>
+      </div>
+
+      <div class="principle-box fi">
+        <h3>🧠 Ce que le POS contient</h3>
+        <p>Le système de caisse (POS) est le vrai cerveau. C'est lui qui sait ce qui a été commandé, par qui, et à quel prix.</p>
+        <div class="p-highlight">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Structure d'une note dans le POS :</div>
+          <div class="tl-code" style="margin-top:0;">NOTE #847 — TABLE-12
+├─ Houmous maison ........... 9,00€
+├─ Tajine agneau ........... 24,00€
+├─ Couscous royal .......... 28,00€
+├─ Thé menthe x4 ........... 16,00€
+└─ TOTAL ................... 77,00€
+   Status: OPEN
+   Ouvert: 20:32 | Serveur: Farid</div>
+        </div>
+        <div style="margin-top:12px;font-size:13px;color:var(--muted);line-height:1.7;">Quand le client tape son badge → NearPay interroge le POS → récupère cette note → l'affiche sur le téléphone du client.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════
+     ANIMATED FLOW DIAGRAM
+══════════════════════════════════════ -->
+<div class="wrap">
+  <section class="fi">
+    <div class="section-tag">Architecture</div>
+    <h2 class="section-title">Le flux complet, <span class="gold-text">en détail</span></h2>
+    <div class="divider"></div>
+
+    <div class="flow-diagram">
+      <div class="flow-title">De la puce NFC à l'encaissement — chaque étape</div>
+
+      <!-- Row 1: Physical world -->
+      <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;text-align:center;">🌍 Monde physique</div>
+      <div class="flow-row">
+        <div class="flow-node fn-badge" id="fn0">
+          <div class="fn-emoji">🏷️</div>
+          <div class="fn-name">Badge NFC</div>
+          <div class="fn-detail">NTAG213 · 13.56MHz</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node fn-phone" id="fn1">
+          <div class="fn-emoji">📱</div>
+          <div class="fn-name">Téléphone client</div>
+          <div class="fn-detail">iOS 13+ / Android 5+</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node fn-phone" id="fn2">
+          <div class="fn-emoji">🌐</div>
+          <div class="fn-name">Navigateur</div>
+          <div class="fn-detail">Safari / Chrome</div>
+        </div>
+      </div>
+
+      <div class="flow-arrow vertical">↓</div>
+
+      <!-- Row 2: Digital world -->
+      <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;text-align:center;">⚡ Monde digital — NearPay API</div>
+      <div class="flow-row">
+        <div class="flow-node fn-api" id="fn3">
+          <div class="fn-emoji">⚡</div>
+          <div class="fn-name">API NearPay</div>
+          <div class="fn-detail">Node.js · REST</div>
+        </div>
+        <div class="flow-arrow">⟷</div>
+        <div class="flow-node fn-pos" id="fn4">
+          <div class="fn-emoji">🍽️</div>
+          <div class="fn-name">POS / Caisse</div>
+          <div class="fn-detail">Lightspeed · Zelty</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node fn-pay" id="fn5">
+          <div class="fn-emoji">💳</div>
+          <div class="fn-name">Stripe Terminal</div>
+          <div class="fn-detail">PCI DSS Level 1</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node fn-kitchen" id="fn6">
+          <div class="fn-emoji">📲</div>
+          <div class="fn-name">Notifications</div>
+          <div class="fn-detail">FCM · APNs · SSE</div>
+        </div>
+      </div>
+
+      <div class="flow-arrow vertical">↓</div>
+
+      <!-- Row 3: Data -->
+      <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;text-align:center;">🗄️ Persistance</div>
+      <div class="flow-row">
+        <div class="flow-node fn-api">
+          <div class="fn-emoji">🗄️</div>
+          <div class="fn-name">PostgreSQL</div>
+          <div class="fn-detail">ACID · Transactions</div>
+        </div>
+        <div class="flow-arrow">+</div>
+        <div class="flow-node fn-api">
+          <div class="fn-emoji">⚡</div>
+          <div class="fn-name">Redis</div>
+          <div class="fn-detail">Sessions · Cache</div>
+        </div>
+        <div class="flow-arrow">+</div>
+        <div class="flow-node fn-api">
+          <div class="fn-emoji">🔌</div>
+          <div class="fn-name">WebSocket</div>
+          <div class="fn-detail">Temps réel</div>
+        </div>
+      </div>
+
+      <!-- Data packets legend -->
+      <div style="margin-top:28px;text-align:center;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <span class="data-packet">TABLE-12 token</span>
+        <span class="data-packet blue">GET /note/TABLE-12</span>
+        <span class="data-packet teal">{ items: [...] }</span>
+        <span class="data-packet green">payment.completed</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCÉNARIOS PAS À PAS
+══════════════════════════════════════ -->
+<div class="wrap">
+  <section class="fi">
+    <div class="section-tag">Scénarios</div>
+    <h2 class="section-title">4 scénarios, <span class="gold-text">pas à pas</span></h2>
+    <div class="divider"></div>
+    <p class="section-sub">Chaque cas d'usage, détaillé. Ce que voit chaque acteur. Ce qui se passe dans les systèmes.</p>
+
+    <div class="scenario-tabs" style="margin-top:32px;">
+      <button class="sc-tab on" onclick="showScenario('pay')">💳 Paiement classique</button>
+      <button class="sc-tab" onclick="showScenario('order')">📱 Commande autonome</button>
+      <button class="sc-tab" onclick="showScenario('split')">➗ Split bill</button>
+      <button class="sc-tab" onclick="showScenario('hotel')">🏨 Hôtel / Folio</button>
+    </div>
+
+    <!-- SCÉNARIO 1: Paiement classique -->
+    <div class="sc-panel on" id="panel-pay">
+      <div class="split-view" style="margin-bottom:28px;">
+        <div class="sv-panel">
+          <h4><span class="sv-label who-client">👤 Client</span> Ce qu'il voit</h4>
+          <div class="sv-steps">
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,142,201,.2);color:var(--blue);">1</div><div class="sv-txt">Pose son téléphone sur le badge doré → son téléphone vibre légèrement</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,142,201,.2);color:var(--blue);">2</div><div class="sv-txt">Une notification NearPay apparaît : <strong>"Votre addition est prête"</strong></div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,142,201,.2);color:var(--blue);">3</div><div class="sv-txt">L'addition détaillée s'affiche — tous les plats, les boissons, le total</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,142,201,.2);color:var(--blue);">4</div><div class="sv-txt">Il tape "Payer" → Apple Pay / Google Pay → Double-clic → ✅ Payé</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,142,201,.2);color:var(--blue);">5</div><div class="sv-txt">Il part. Sans attendre. Sans chercher le serveur.</div></div>
+          </div>
+        </div>
+        <div class="sv-panel">
+          <h4><span class="sv-label who-system">⚡ Système</span> Ce qui se passe</h4>
+          <div class="sv-steps">
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,201,168,.1);color:var(--teal);">1</div><div class="sv-txt">Puce NFC lue → URL décodée → token extrait et <strong>vérifié HMAC</strong></div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,201,168,.1);color:var(--teal);">2</div><div class="sv-txt"><code>GET /tables/TABLE-12</code> → API interroge le POS → note récupérée en temps réel</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,201,168,.1);color:var(--teal);">3</div><div class="sv-txt">JSON formaté → rendu HTML côté client → addition affichée <strong>en < 400ms</strong></div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,201,168,.1);color:var(--teal);">4</div><div class="sv-txt">Stripe PaymentIntent créé → Apple Pay tokenise la carte → paiement envoyé</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,201,168,.1);color:var(--teal);">5</div><div class="sv-txt">Webhook Stripe reçu → note POS clôturée → serveur notifié → rapport mis à jour</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline" id="tl-pay">
+        <div class="tl-step vis">
+          <div class="tl-dot">1</div>
+          <div class="tl-title">Client tape son téléphone <span class="tl-who who-client">👤 Client</span></div>
+          <div class="tl-desc">Le téléphone lit la puce NFC en moins de 100ms. Le navigateur s'ouvre automatiquement sur l'URL sécurisée.</div>
+          <div class="tl-visual">
+            <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">URL lue sur le badge :</div>
+            <div class="tl-code">https://pay.nearpay.io/t/TABLE-12
+  ?tid=550e8400-e29b-41d4-a716
+  &ts=1709848020
+  &sig=HMAC_SHA256(secret, tid+ts)
+// sig vérifié côté serveur → anti-fraude</div>
+          </div>
+        </div>
+
+        <div class="tl-step vis">
+          <div class="tl-dot">2</div>
+          <div class="tl-title">API récupère la note du POS <span class="tl-who who-system">⚡ API</span></div>
+          <div class="tl-desc">NearPay interroge le système de caisse en temps réel. Les plats commandés 2 minutes avant le tap sont déjà là.</div>
+          <div class="tl-visual">
+            <div class="tl-code">// Requête API → POS (Lightspeed)
+GET https://api.lightspeedhq.com/account/{id}/sale/TABLE-12
+Authorization: Bearer {pos_token}
+
+// Réponse POS (simplifié)
+{
+  "saleId": "847291",
+  "tableId": "TABLE-12",
+  "status": "open",
+  "lineItems": [
+    { "name": "Houmous maison", "unitPrice": 900, "qty": 1 },
+    { "name": "Tajine agneau",  "unitPrice": 2400, "qty": 1 },
+    { "name": "Thé menthe",     "unitPrice": 400,  "qty": 4 }
+  ],
+  "total": 5100  // centimes
+}</div>
+          </div>
+        </div>
+
+        <div class="tl-step vis">
+          <div class="tl-dot">3</div>
+          <div class="tl-title">Stripe crée un PaymentIntent <span class="tl-who who-system">💳 Stripe</span></div>
+          <div class="tl-desc">Un PaymentIntent est créé côté serveur avec le montant exact. Le client confirme avec Apple Pay ou Google Pay.</div>
+          <div class="tl-visual">
+            <div class="tl-code">// NearPay API → Stripe
+const paymentIntent = await stripe.paymentIntents.create({
+  amount: 5100,           // 51,00 €
+  currency: 'eur',
+  payment_method_types: ['card'],
+  metadata: {
+    tableId: 'TABLE-12',
+    posOrderId: '847291',
+    venue: 'le-jardin-orient'
+  }
+});
+// → client_secret envoyé au navigateur client
+// → Apple Pay tokenise sans exposer le numéro de carte</div>
+          </div>
+        </div>
+
+        <div class="tl-step vis">
+          <div class="tl-dot">4</div>
+          <div class="tl-title">Webhook → clôture automatique <span class="tl-who who-system">⚡ Webhook</span></div>
+          <div class="tl-desc">Stripe envoie un webhook signé à NearPay. NearPay clôture la note dans le POS. Le serveur reçoit une notification push.</div>
+          <div class="tl-visual">
+            <div class="tl-code">// Webhook Stripe reçu par NearPay
+POST /webhooks/stripe
+{
+  "type": "payment_intent.succeeded",
+  "data": {
+    "object": {
+      "id": "pi_3PxQ...",
+      "amount": 5100,
+      "metadata": { "tableId": "TABLE-12", "posOrderId": "847291" }
+    }
+  }
+}
+
+// NearPay clôture la note POS
+PATCH /api/pos/sales/847291 → status: "closed"
+
+// NearPay notifie le serveur (FCM)
+→ "Table 12 payée — 51,00 € — Prête à être remise"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCÉNARIO 2: Commande autonome -->
+    <div class="sc-panel" id="panel-order">
+      <div class="split-view" style="margin-bottom:28px;">
+        <div class="sv-panel">
+          <h4><span class="sv-label who-client">👤 Client</span> Ce qu'il vit</h4>
+          <div class="sv-steps">
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,142,201,.2);color:var(--blue);">1</div><div class="sv-txt">En milieu de repas, il veut un verre de plus → tape le badge</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,142,201,.2);color:var(--blue);">2</div><div class="sv-txt">Voit la carte mini avec les boissons → sélectionne "Rosé 25cl"</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,142,201,.2);color:var(--blue);">3</div><div class="sv-txt">Confirme la commande → notification : "Commande reçue !"</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,142,201,.2);color:var(--blue);">4</div><div class="sv-txt">Le serveur arrive avec le verre en 3 minutes. Sans appel.</div></div>
+          </div>
+        </div>
+        <div class="sv-panel">
+          <h4><span class="sv-label who-kitchen">🍳 Cuisine & Salle</span> Ce qui se passe</h4>
+          <div class="sv-steps">
+            <div class="sv-step"><div class="sv-num" style="background:rgba(34,197,94,.1);color:var(--green);">1</div><div class="sv-txt">Commande reçue par l'API NearPay → ajoutée à la note TABLE-12 dans le POS</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(34,197,94,.1);color:var(--green);">2</div><div class="sv-txt">KDS (écran cuisine) sonne → <strong>"TABLE 12 : Rosé 25cl"</strong> en surbrillance</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(34,197,94,.1);color:var(--green);">3</div><div class="sv-txt">Serveur reçoit sur sa montre / téléphone → <strong>"Commande table 12"</strong></div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(34,197,94,.1);color:var(--green);">4</div><div class="sv-txt">La commande est déjà dans la note → sera facturée automatiquement au paiement</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline">
+        <div class="tl-step vis">
+          <div class="tl-dot">1</div>
+          <div class="tl-title">Badge lu → menu contextuel <span class="tl-who who-system">⚡ API</span></div>
+          <div class="tl-desc">L'API détecte que la note est déjà ouverte. Elle propose le mode "Commander" en plus de "Payer".</div>
+          <div class="tl-code">GET /tables/TABLE-12
+→ {
+    "status": "open",
+    "canOrder": true,
+    "canPay": true,
+    "menu": "/menu/TABLE-12/quick",  // mini-carte
+    "currentTotal": 3300
+  }</div>
+        </div>
+        <div class="tl-step vis">
+          <div class="tl-dot">2</div>
+          <div class="tl-title">Commande envoyée <span class="tl-who who-client">👤 Client</span></div>
+          <div class="tl-desc">Le client sélectionne ses articles depuis la mini-carte. La commande est soumise avec son identifiant de session.</div>
+          <div class="tl-code">POST /tables/TABLE-12/orders
+{
+  "sessionId": "sess_abc123",
+  "items": [
+    { "sku": "DRINK-ROSE-25", "qty": 1, "note": "très frais svp" }
+  ]
+}
+→ { "orderId": "ord_xyz", "estimatedTime": "3-5 min", "status": "confirmed" }</div>
+        </div>
+        <div class="tl-step vis">
+          <div class="tl-dot">3</div>
+          <div class="tl-title">POS + KDS notifiés simultanément <span class="tl-who who-kitchen">🍳 Cuisine</span></div>
+          <div class="tl-desc">La commande est ajoutée à la note POS ET envoyée à l'écran cuisine en moins de 200ms.</div>
+          <div class="tl-code">// 1. Ajout à la note POS (Lightspeed API)
+POST /account/{id}/sale/847291/lineitem
+{ "itemId": "DRINK-ROSE-25", "qty": 1 }
+
+// 2. KDS notifié (WebSocket temps réel)
+WS → kitchen-display-1: {
+  "table": "TABLE-12",
+  "item": "Rosé 25cl",
+  "note": "très frais svp",
+  "priority": "normal"
+}
+
+// 3. Serveur notifié (FCM push)
+→ "📱 Table 12 a commandé : Rosé 25cl"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCÉNARIO 3: Split bill -->
+    <div class="sc-panel" id="panel-split">
+      <div class="split-view" style="margin-bottom:28px;">
+        <div class="sv-panel">
+          <h4><span class="sv-label who-client">👥 Les 4 amis</span> Ce qu'ils font</h4>
+          <div class="sv-steps">
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,142,201,.2);color:var(--blue);">1</div><div class="sv-txt">Mohamed tape le badge → choisit "Partager à 4"</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,142,201,.2);color:var(--blue);">2</div><div class="sv-txt">Une session partagée est créée → Mohamed voit un QR code / lien à partager</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,142,201,.2);color:var(--blue);">3</div><div class="sv-txt">Chaque ami tape son téléphone sur le badge → rejoint la session automatiquement</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,142,201,.2);color:var(--blue);">4</div><div class="sv-txt">Chacun voit sa part (équitable ou itemisée) → paie avec son Apple Pay</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,142,201,.2);color:var(--blue);">5</div><div class="sv-txt">Dès que le 4ème paie → note clôturée → serveur notifié</div></div>
+          </div>
+        </div>
+        <div class="sv-panel">
+          <h4><span class="sv-label who-system">⚡ Système</span> Session partagée</h4>
+          <div class="sv-steps">
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,201,168,.1);color:var(--teal);">1</div><div class="sv-txt">Session créée dans Redis — TTL 30min — ID unique par note</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,201,168,.1);color:var(--teal);">2</div><div class="sv-txt">Chaque tap badge → jointure auto à la session existante</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,201,168,.1);color:var(--teal);">3</div><div class="sv-txt">4 PaymentIntents Stripe séparés — un par convive — montants indépendants</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,201,168,.1);color:var(--teal);">4</div><div class="sv-txt">Réconciliation automatique — total partiel = total de la note → clôture</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(76,201,168,.1);color:var(--teal);">5</div><div class="sv-txt">Chaque convive reçoit son propre reçu par email / sur téléphone</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="tl-code" style="margin-top:0;">// Création session split
+POST /sessions
+{ "tableId": "TABLE-12", "mode": "equal", "participants": 4 }
+→ { "sessionId": "sess_split_abc", "shareToken": "TK84B", "amountPerPerson": 1275 }
+
+// Chaque convive rejoint (tap badge ou lien)
+POST /sessions/sess_split_abc/join
+{ "deviceId": "dev_sara_iphone" }
+→ { "position": 2, "amountDue": 1275, "paid": [1], "pending": [2,3,4] }
+
+// Paiement individuel (Stripe PaymentIntent distinct)
+POST /sessions/sess_split_abc/pay
+{ "deviceId": "dev_sara_iphone", "paymentMethodId": "pm_sara_applepay" }
+→ { "status": "paid", "receiptId": "rcpt_sara_001" }
+
+// Réconciliation automatique
+// Quand paid.length === participants → note POS clôturée</div>
+    </div>
+
+    <!-- SCÉNARIO 4: Hôtel -->
+    <div class="sc-panel" id="panel-hotel">
+      <div class="split-view" style="margin-bottom:28px;">
+        <div class="sv-panel">
+          <h4><span class="sv-label who-client">🏨 Karim</span> Son séjour</h4>
+          <div class="sv-steps">
+            <div class="sv-step"><div class="sv-num" style="background:rgba(167,139,250,.15);color:var(--purple);">1</div><div class="sv-txt">Check-in → reçoit sa clé NFC de chambre (MIFARE Classic)</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(167,139,250,.15);color:var(--purple);">2</div><div class="sv-txt">Spa → pose sa clé → soin facturé à sa chambre automatiquement</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(167,139,250,.15);color:var(--purple);">3</div><div class="sv-txt">Restaurant de l'hôtel → tape sa clé → addition au folio chambre</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(167,139,250,.15);color:var(--purple);">4</div><div class="sv-txt">Check-out → voit le folio total → paie tout en 1 tap</div></div>
+          </div>
+        </div>
+        <div class="sv-panel">
+          <h4><span class="sv-label who-system">🏨 PMS Hôtel</span> Intégration</h4>
+          <div class="sv-steps">
+            <div class="sv-step"><div class="sv-num" style="background:rgba(167,139,250,.1);color:var(--purple);">1</div><div class="sv-txt">Clé MIFARE lue → roomId extrait → PMS (OPERA/Mews) vérifie le séjour actif</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(167,139,250,.1);color:var(--purple);">2</div><div class="sv-txt">Chaque service → charge créée dans le folio chambre via l'API PMS</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(167,139,250,.1);color:var(--purple);">3</div><div class="sv-txt">Au check-out → folio complet récupéré → lien de paiement NearPay généré</div></div>
+            <div class="sv-step"><div class="sv-num" style="background:rgba(167,139,250,.1);color:var(--purple);">4</div><div class="sv-txt">Paiement Stripe → webhook → PMS marque le séjour "settled" → clé désactivée</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="tl-code" style="margin-top:0;">// Clé hôtel lue au SPA
+NFC read → roomId: "302" + guestToken: "tok_karim_xyz"
+
+// Vérification PMS
+GET /pms/rooms/302/guest → { "name": "Karim Mansouri", "checkOut": "2025-03-09", "active": true }
+
+// Charge folio (OPERA API)
+POST /pms/rooms/302/charges
+{ "amount": 28000, "outlet": "spa",
+  "description": "Massage signature 60min — 08/03/2025",
+  "posRef": "SPA-TXN-4471" }
+
+// Folio complet au check-out
+GET /pms/rooms/302/folio
+→ { "total": 284000,  // 2840,00€
+    "charges": [
+      { "date": "07/03", "desc": "Chambre Deluxe", "amount": 90000 },
+      { "date": "08/03", "desc": "Spa — massage",  "amount": 28000 },
+      { "date": "08/03", "desc": "Dîner restaurant","amount": 34000 },
+      ...
+    ]
+  }
+// → NearPay génère lien paiement → 1 seul tap → tout réglé</div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════
+     LES REÇUS
+══════════════════════════════════════ -->
+<div class="wrap">
+  <section class="fi">
+    <div class="section-tag">Les reçus</div>
+    <h2 class="section-title">3 types de reçus, <span class="gold-text">automatiques</span></h2>
+    <div class="divider"></div>
+    <p class="section-sub">Le reçu n'est pas juste un ticket. C'est un événement qui déclenche des actions dans 3 systèmes différents simultanément.</p>
+
+    <div class="receipt-grid">
+
+      <div class="receipt-card fi">
+        <div class="rc-header">
+          <h3>📱 Reçu Client</h3>
+          <p>Immédiat · Sur le téléphone · Optionnel par email</p>
+        </div>
+        <div class="rc-body">
+          <div class="rc-item"><div class="rc-icon">⚡</div><div class="rc-txt"><strong>Immédiat</strong>S'affiche sur le téléphone dès la confirmation de paiement.</div></div>
+          <div class="rc-item"><div class="rc-icon">📧</div><div class="rc-txt"><strong>Envoyé par email</strong>Si le client a entré son email (opt-in) — format PDF conforme.</div></div>
+          <div class="rc-item"><div class="rc-icon">🔗</div><div class="rc-txt"><strong>Lien permanent</strong>pay.nearpay.io/receipt/rcpt_xxx — accessible 24 mois.</div></div>
+          <div class="rc-preview">
+            <div class="rc-preview-title">Le Jardin d'Orient — 07/03/2025</div>
+            <div class="rc-line"><span>Houmous maison</span><span>9,00 €</span></div>
+            <div class="rc-line"><span>Tajine agneau</span><span>24,00 €</span></div>
+            <div class="rc-line"><span>Thé menthe x4</span><span>16,00 €</span></div>
+            <div class="rc-line"><span>TVA 10%</span><span>4,45 €</span></div>
+            <div class="rc-line"><span>TOTAL</span><span>53,00 €</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="receipt-card fi">
+        <div class="rc-header">
+          <h3>🍽️ Reçu POS</h3>
+          <p>Automatique · Clôture la note · Conforme caisse</p>
+        </div>
+        <div class="rc-body">
+          <div class="rc-item"><div class="rc-icon">🔄</div><div class="rc-txt"><strong>Clôture automatique</strong>Le webhook Stripe déclenche la clôture de la note dans le POS. Aucune action humaine requise.</div></div>
+          <div class="rc-item"><div class="rc-icon">🧾</div><div class="rc-txt"><strong>Journal de caisse</strong>La transaction apparaît dans le rapport Z de fin de journée, identique à un paiement terminal classique.</div></div>
+          <div class="rc-item"><div class="rc-icon">📊</div><div class="rc-txt"><strong>Stats temps réel</strong>CA du jour, rotation des tables, ticket moyen — mis à jour instantanément.</div></div>
+          <div class="rc-preview">
+            <div class="rc-preview-title">Journal POS — Note #847291</div>
+            <div class="rc-line"><span>Statut</span><span style="color:var(--green);">✅ CLOSED</span></div>
+            <div class="rc-line"><span>Paiement</span><span>NearPay</span></div>
+            <div class="rc-line"><span>Réf Stripe</span><span style="font-size:10px;">pi_3PxQ...</span></div>
+            <div class="rc-line"><span>Clôturé à</span><span>21:52:34</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="receipt-card fi">
+        <div class="rc-header">
+          <h3>📒 Reçu Comptable</h3>
+          <p>Export quotidien · TVA détaillée · Conforme fiscalement</p>
+        </div>
+        <div class="rc-body">
+          <div class="rc-item"><div class="rc-icon">📅</div><div class="rc-txt"><strong>Export quotidien</strong>CSV / JSON exporté chaque soir à minuit vers le logiciel comptable (Sage, QuickBooks...).</div></div>
+          <div class="rc-item"><div class="rc-icon">🏛️</div><div class="rc-txt"><strong>Conformité fiscale</strong>Numéros séquentiels, TVA ventilée par taux, archivage 10 ans selon réglementation française.</div></div>
+          <div class="rc-item"><div class="rc-icon">🔌</div><div class="rc-txt"><strong>API comptable</strong>Intégration directe Pennylane, QuickBooks, Sage via webhook ou export planifié.</div></div>
+          <div class="rc-preview">
+            <div class="rc-preview-title">Export comptable — 07/03/2025</div>
+            <div class="rc-line"><span>Transactions</span><span>47</span></div>
+            <div class="rc-line"><span>CA brut</span><span>3 241,00 €</span></div>
+            <div class="rc-line"><span>TVA 10%</span><span>294,64 €</span></div>
+            <div class="rc-line"><span>TVA 20%</span><span>18,33 €</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════
+     FAQ TECHNIQUE
+══════════════════════════════════════ -->
+<div class="wrap">
+  <section class="fi">
+    <div class="section-tag">Questions fréquentes</div>
+    <h2 class="section-title">Les vraies <span class="gold-text">questions techniques</span></h2>
+    <div class="divider"></div>
+
+    <div class="faq-grid">
+      <div class="faq-box" onclick="toggleFaq(this)">
+        <h4>Le lecteur NFC "connaît" la table ? <span class="faq-arrow">+</span></h4>
+        <p>Non. Le badge est "bête" — il contient juste une URL avec l'identifiant de la table. C'est le serveur NearPay qui interroge le POS pour retrouver les commandes associées. Le badge lui-même ne stocke aucune information de commande.</p>
+      </div>
+      <div class="faq-box" onclick="toggleFaq(this)">
+        <h4>Que se passe-t-il si la connexion coupe ? <span class="faq-arrow">+</span></h4>
+        <p>Le badge a toujours fonctionné hors-ligne côté lecture (le téléphone lit l'URL localement). La page de paiement nécessite une connexion. Dans les lieux avec WiFi faible (festivals), les lecteurs POS bufferisent les transactions et synchronisent dès la reconnexion.</p>
+      </div>
+      <div class="faq-box" onclick="toggleFaq(this)">
+        <h4>Comment sait-on que la commande appartient à cette table ? <span class="faq-arrow">+</span></h4>
+        <p>Le serveur crée une "note" ou "ticket" dans le POS en début de service et l'associe à l'identifiant du badge (ex: TABLE-12). Toutes les commandes saisies pour cette table s'ajoutent à cette note. NearPay récupère la note via l'ID de table — pas via le badge directement.</p>
+      </div>
+      <div class="faq-box" onclick="toggleFaq(this)">
+        <h4>Un client peut-il payer pour une autre table ? <span class="faq-arrow">+</span></h4>
+        <p>Non. Le token dans l'URL est signé (HMAC-SHA256) et lié au venue. Sans la clé secrète, il est impossible de forger un token valide pour une autre table. De plus, chaque token a un timestamp — il expire après 24h.</p>
+      </div>
+      <div class="faq-box" onclick="toggleFaq(this)">
+        <h4>Où est stocké le numéro de carte du client ? <span class="faq-arrow">+</span></h4>
+        <p>Nulle part dans nos systèmes. Stripe tokenise la carte côté client (Apple Pay / navigateur) avant qu'elle ne quitte le téléphone. NearPay ne reçoit jamais le numéro de carte brut — uniquement un token opaque de Stripe. Certification PCI DSS Level 1.</p>
+      </div>
+      <div class="faq-box" onclick="toggleFaq(this)">
+        <h4>Que reçoit la cuisine exactement ? <span class="faq-arrow">+</span></h4>
+        <p>Quand un client commande depuis son téléphone, la commande est d'abord ajoutée à la note POS, puis transmise à l'écran KDS en cuisine via WebSocket en temps réel. Le cuisinier voit : table, plat, quantité, heure et note spéciale (ex: "sans gluten"). Même chose que si le serveur l'avait saisie manuellement.</p>
+      </div>
+      <div class="faq-box" onclick="toggleFaq(this)">
+        <h4>Le serveur est-il notifié immédiatement ? <span class="faq-arrow">+</span></h4>
+        <p>Oui. Dès que le paiement est confirmé par Stripe (environ 2 secondes), NearPay envoie une notification push FCM / APNs sur le téléphone ou la montre du serveur. La notification indique : table, montant, heure, et si une évaluation a été laissée.</p>
+      </div>
+      <div class="faq-box" onclick="toggleFaq(this)">
+        <h4>Comment fonctionne le split bill en cas de litige ? <span class="faq-arrow">+</span></h4>
+        <p>Chaque paiement de split est un PaymentIntent Stripe distinct avec son propre reçu. En cas de litige, chaque convive peut contester uniquement sa part. La réconciliation côté POS montre le total des parts qui doit correspondre exactement au total de la note.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════
+     CTA
+══════════════════════════════════════ -->
+<div class="wrap">
+  <section class="fi" style="padding-bottom:100px;">
+    <div style="text-align:center;background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(76,142,201,.05));border:1px solid rgba(201,168,76,.18);border-radius:24px;padding:64px 40px;">
+      <h2 class="section-title">Vous avez encore des questions ?</h2>
+      <p style="color:var(--muted);max-width:480px;margin:0 auto 36px;font-weight:300;">Notre équipe technique répond à toutes vos questions d'intégration.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="index.html" style="padding:14px 32px;background:var(--gold);color:#000;border:none;border-radius:50px;font-size:14px;font-weight:600;text-decoration:none;display:inline-block;">← Retour à NearPay</a>
+        <a href="demo.html" style="padding:14px 32px;background:transparent;color:var(--text);border:1px solid rgba(255,255,255,.18);border-radius:50px;font-size:14px;text-decoration:none;display:inline-block;">🎬 Voir la démo interactive</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+/* Scenario tabs */
+function showScenario(id){
+  document.querySelectorAll('.sc-tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.sc-panel').forEach(p=>p.classList.remove('on'));
+  event.target.classList.add('on');
+  document.getElementById('panel-'+id).classList.add('on');
+}
+
+/* FAQ */
+function toggleFaq(el){
+  el.classList.toggle('open');
+}
+
+/* Scroll reveal */
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');}});
+},{threshold:.08,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.fi,.tl-step').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

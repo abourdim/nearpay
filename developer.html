@@ -1,0 +1,1776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NearPay — Developer Documentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07070F;--bg2:#0F0F1C;--bg3:#161626;--bg4:#1C1C32;
+  --gold:#C9A84C;--gold-l:#E8D5A3;--gold-d:#8B6914;
+  --text:#F0EDE6;--muted:#8A8070;
+  --blue:#4C8EC9;--blue-l:#7EB8E8;--blue-d:#2A5A8B;
+  --teal:#4CC9A8;--orange:#F97316;--purple:#A78BFA;
+  --green:#22C55E;--red:#EF4444;--yellow:#EAB308;
+  --code-bg:#0A0A16;--code-border:rgba(76,142,201,.18);
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--gold-d);border-radius:3px;}
+
+/* ── BISMILLAH ── */
+.bismillah{text-align:center;padding:20px;font-family:'Amiri',serif;font-size:clamp(20px,3.5vw,40px);color:var(--gold);background:linear-gradient(180deg,rgba(201,168,76,.08),transparent);}
+.bismillah::after{content:'';display:block;width:80px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:10px auto 0;}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:300;backdrop-filter:blur(20px);background:rgba(7,7,15,.94);border-bottom:1px solid rgba(201,168,76,.1);height:52px;display:flex;align-items:center;gap:16px;padding:0 20px;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;color:var(--gold);white-space:nowrap;}
+.logo span{color:var(--text);}
+.nav-links{display:flex;gap:4px;overflow-x:auto;}
+.nl{padding:5px 12px;border-radius:7px;font-size:12px;color:var(--muted);text-decoration:none;transition:all .3s;white-space:nowrap;border:1px solid transparent;}
+.nl:hover{color:var(--text);border-color:rgba(255,255,255,.08);}
+.nl.active{color:var(--blue-l);border-color:rgba(76,142,201,.25);background:rgba(76,142,201,.07);}
+.nl.back{color:var(--gold-l);}
+
+/* ── LAYOUT ── */
+.page{display:grid;grid-template-columns:240px 1fr;min-height:100vh;}
+.sidebar{position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto;background:var(--bg2);border-right:1px solid rgba(255,255,255,.05);padding:24px 16px;}
+.sb-section{margin-bottom:24px;}
+.sb-title{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;padding:0 8px;}
+.sb-link{display:block;padding:6px 10px;border-radius:7px;font-size:12px;color:var(--muted);text-decoration:none;transition:all .2s;border-left:2px solid transparent;}
+.sb-link:hover{color:var(--text);background:rgba(255,255,255,.04);}
+.sb-link.active{color:var(--blue-l);background:rgba(76,142,201,.08);border-left-color:var(--blue);}
+.sb-chip{display:inline-block;padding:1px 7px;border-radius:50px;font-size:9px;margin-left:6px;vertical-align:middle;}
+.chip-new{background:rgba(34,197,94,.15);color:var(--green);}
+.chip-esp{background:rgba(249,115,22,.15);color:var(--orange);}
+.chip-py{background:rgba(76,142,201,.15);color:var(--blue-l);}
+
+.main{padding:40px 48px;max-width:860px;}
+
+/* ── SECTIONS ── */
+.sec{margin-bottom:72px;padding-top:8px;}
+.sec-tag{display:inline-block;padding:3px 12px;border-radius:50px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;}
+.tag-hw{background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.22);color:var(--orange);}
+.tag-sw{background:rgba(76,142,201,.1);border:1px solid rgba(76,142,201,.22);color:var(--blue-l);}
+.tag-code{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.22);color:var(--purple);}
+.tag-ui{background:rgba(76,201,168,.1);border:1px solid rgba(76,201,168,.22);color:var(--teal);}
+.tag-arch{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.22);color:var(--gold);}
+
+.sec h2{font-family:'Cormorant Garamond',serif;font-size:clamp(26px,3.5vw,42px);font-weight:700;line-height:1.1;margin-bottom:10px;}
+.sec p.lead{color:var(--muted);font-size:15px;font-weight:300;line-height:1.7;margin-bottom:24px;max-width:640px;}
+.divider{width:60px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin-bottom:24px;}
+
+/* ── CODE BLOCKS ── */
+.code-wrap{background:var(--code-bg);border:1px solid var(--code-border);border-radius:12px;overflow:hidden;margin-bottom:20px;}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(255,255,255,.03);border-bottom:1px solid var(--code-border);}
+.code-filename{font-family:'DM Mono',monospace;font-size:12px;color:var(--blue-l);display:flex;align-items:center;gap:8px;}
+.code-lang{font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(76,142,201,.15);color:var(--blue-l);}
+.code-lang.py{background:rgba(249,115,22,.15);color:var(--orange);}
+.code-lang.cpp{background:rgba(167,139,250,.15);color:var(--purple);}
+.code-lang.js{background:rgba(234,179,8,.12);color:var(--yellow);}
+.code-lang.html{background:rgba(239,68,68,.12);color:#FCA5A5;}
+.code-lang.sh{background:rgba(34,197,94,.1);color:var(--green);}
+.code-copy{font-size:11px;color:var(--muted);cursor:pointer;padding:3px 10px;border:1px solid rgba(255,255,255,.08);border-radius:5px;background:transparent;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.code-copy:hover{color:var(--text);border-color:rgba(255,255,255,.2);}
+pre{padding:20px;font-family:'DM Mono',monospace;font-size:11.5px;line-height:1.85;overflow-x:auto;color:#C8D8E8;}
+pre .c{color:#4B6070;font-style:italic;}
+pre .s{color:#98C379;}
+pre .k{color:#C678DD;}
+pre .n{color:#61AFEF;}
+pre .f{color:#E5C07B;}
+pre .num{color:#D19A66;}
+pre .op{color:#56B6C2;}
+pre .g{color:var(--green);}
+pre .r{color:var(--red);}
+pre .y{color:var(--yellow);}
+
+/* File tabs */
+.file-tabs{display:flex;gap:2px;background:rgba(0,0,0,.3);border:1px solid var(--code-border);border-bottom:none;border-radius:10px 10px 0 0;padding:6px 6px 0;overflow-x:auto;}
+.ft{padding:6px 14px;border-radius:6px 6px 0 0;font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);cursor:pointer;border:1px solid transparent;transition:all .2s;}
+.ft.on{background:var(--code-bg);border-color:var(--code-border);border-bottom-color:var(--code-bg);color:var(--blue-l);}
+.tab-content{display:none;}
+.tab-content.on{display:block;}
+.file-tabs + .code-wrap{border-radius:0 0 12px 12px;}
+
+/* ── SPEC TABLES ── */
+.spec-table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:13px;}
+.spec-table th{text-align:left;padding:9px 14px;background:rgba(76,142,201,.07);border-bottom:1px solid rgba(76,142,201,.15);color:var(--blue-l);font-size:10px;text-transform:uppercase;letter-spacing:.08em;}
+.spec-table td{padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--muted);vertical-align:top;}
+.spec-table td:first-child{color:var(--text);font-weight:500;white-space:nowrap;}
+.spec-table tr:hover td{background:rgba(255,255,255,.02);}
+.badge-chip{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-family:'DM Mono',monospace;}
+.bc-ok{background:rgba(34,197,94,.12);color:var(--green);}
+.bc-warn{background:rgba(234,179,8,.12);color:var(--yellow);}
+.bc-info{background:rgba(76,142,201,.12);color:var(--blue-l);}
+
+/* ── WIRING DIAGRAM ── */
+.wiring-box{background:var(--bg3);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:32px;margin-bottom:24px;overflow-x:auto;}
+.wiring-title{font-size:13px;font-weight:600;color:var(--gold-l);margin-bottom:20px;text-align:center;}
+
+/* ── ARCHITECTURE DIAGRAM ── */
+.arch-box-dev{
+  padding:10px 18px;border-radius:10px;text-align:center;font-size:12px;font-weight:600;
+  display:inline-flex;flex-direction:column;align-items:center;gap:4px;min-width:110px;
+}
+.ab-esp{background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.28);color:var(--orange);}
+.ab-nfc{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.28);color:var(--gold);}
+.ab-py{background:rgba(76,142,201,.1);border:1px solid rgba(76,142,201,.28);color:var(--blue-l);}
+.ab-ws{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.28);color:var(--purple);}
+.ab-db{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.22);color:var(--green);}
+.ab-ui{background:rgba(76,201,168,.1);border:1px solid rgba(76,201,168,.22);color:var(--teal);}
+.arch-arrow{color:rgba(255,255,255,.25);font-size:18px;margin:0 8px;}
+.arch-row{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.arch-label{font-size:10px;color:var(--muted);margin:0 4px;}
+
+/* ── WEB APP SNAPSHOTS ── */
+.snapshots-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-bottom:28px;}
+.snapshot{border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.08);}
+.snap-label{padding:8px 14px;background:var(--bg3);font-size:11px;color:var(--muted);border-top:1px solid rgba(255,255,255,.05);}
+
+/* Browser window mockup */
+.browser{background:#1A1A2E;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.1);}
+.browser-bar{background:#252535;height:32px;display:flex;align-items:center;padding:0 12px;gap:10px;}
+.b-dots{display:flex;gap:5px;}
+.b-dot{width:10px;height:10px;border-radius:50%;}
+.b-url{flex:1;background:rgba(255,255,255,.06);border-radius:4px;height:18px;display:flex;align-items:center;padding:0 8px;font-family:'DM Mono',monospace;font-size:9px;color:rgba(255,255,255,.4);}
+.browser-content{padding:0;}
+
+/* Dashboard mockup */
+.dash{background:#0A0A14;padding:14px;}
+.dash-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.dash-logo{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--gold);font-weight:700;}
+.dash-status{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--green);}
+.dash-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s ease infinite;}
+.tables-grid-mini{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px;}
+.table-mini{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:7px;text-align:center;font-size:9px;}
+.table-mini.occupied{border-color:rgba(201,168,76,.35);background:rgba(201,168,76,.07);}
+.table-mini.paying{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.08);}
+.table-mini.free{opacity:.4;}
+.t-num{font-weight:700;font-size:11px;color:var(--text);margin-bottom:2px;}
+.t-amt{color:var(--gold);font-size:9px;}
+.t-status{color:var(--muted);font-size:8px;}
+.dash-stats{display:flex;gap:6px;}
+.ds{background:rgba(255,255,255,.04);border-radius:6px;padding:7px 10px;flex:1;text-align:center;}
+.ds-val{font-size:14px;font-weight:700;color:var(--gold);}
+.ds-lbl{font-size:8px;color:var(--muted);margin-top:1px;}
+
+/* Payment page mockup */
+.payment-page{background:#F8F7F4;padding:0;}
+.pp-header{background:linear-gradient(135deg,#8B6914,#C9A84C);padding:12px 14px;text-align:center;}
+.pp-logo{font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:700;color:rgba(0,0,0,.8);}
+.pp-table{font-size:9px;color:rgba(0,0,0,.55);}
+.pp-items{padding:8px 12px;}
+.pp-item{display:flex;justify-content:space-between;font-size:10px;color:#333;padding:4px 0;border-bottom:1px solid rgba(0,0,0,.06);}
+.pp-total{display:flex;justify-content:space-between;font-weight:700;font-size:12px;color:#111;padding:6px 12px;border-top:1px solid rgba(0,0,0,.1);}
+.pp-btn{margin:8px 10px;padding:9px;background:#000;color:#fff;border:none;border-radius:7px;font-size:10px;font-weight:600;width:calc(100% - 20px);text-align:center;}
+
+/* KDS mockup */
+.kds{background:#030308;padding:10px;}
+.kds-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.kds-title{font-size:10px;font-weight:700;color:var(--green);letter-spacing:.1em;text-transform:uppercase;}
+.kds-time{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;}
+.kds-cards{display:flex;gap:6px;}
+.kds-card{background:#0A0A18;border:1px solid rgba(34,197,94,.25);border-radius:6px;padding:8px;flex:1;}
+.kds-card.urgent{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.05);}
+.kds-card-table{font-size:10px;font-weight:700;color:var(--green);margin-bottom:4px;}
+.kds-card.urgent .kds-card-table{color:var(--red);}
+.kds-item{font-size:9px;color:var(--muted);padding:2px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.kds-item:last-child{border:none;}
+.kds-timer{font-size:9px;color:var(--muted);margin-top:4px;font-family:'DM Mono',monospace;}
+.kds-timer.warn{color:var(--yellow);}
+.kds-timer.urgent{color:var(--red);}
+
+/* ESP32 terminal mockup */
+.terminal{background:#000;padding:14px;font-family:'DM Mono',monospace;font-size:10px;line-height:1.8;}
+.t-prompt{color:var(--green);}
+.t-line{color:rgba(255,255,255,.7);}
+.t-ok{color:var(--green);}
+.t-warn{color:var(--yellow);}
+.t-info{color:var(--blue-l);}
+.t-err{color:var(--red);}
+
+/* Admin panel mockup */
+.admin{background:#0A0A14;padding:12px;}
+.admin-nav{display:flex;gap:6px;margin-bottom:12px;}
+.admin-tab{padding:4px 10px;border-radius:4px;font-size:9px;color:var(--muted);}
+.admin-tab.on{background:rgba(76,142,201,.15);color:var(--blue-l);}
+.admin-chart{background:rgba(255,255,255,.03);border-radius:6px;padding:10px;margin-bottom:8px;height:60px;display:flex;align-items:flex-end;gap:4px;}
+.bar{background:linear-gradient(180deg,var(--gold),var(--gold-d));border-radius:2px 2px 0 0;flex:1;}
+.admin-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:9px;color:var(--muted);}
+.admin-row span:last-child{color:var(--text);}
+
+/* ── INSTALL STEPS ── */
+.install-steps{counter-reset:step;}
+.install-step{display:flex;gap:16px;margin-bottom:20px;position:relative;}
+.install-step::before{counter-increment:step;content:counter(step);width:28px;height:28px;border-radius:50%;background:rgba(76,142,201,.15);border:1px solid rgba(76,142,201,.3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--blue-l);flex-shrink:0;margin-top:2px;}
+.install-step-body h4{font-size:14px;font-weight:600;margin-bottom:4px;}
+.install-step-body p{font-size:13px;color:var(--muted);line-height:1.6;}
+
+/* ── CALLOUTS ── */
+.callout{border-radius:10px;padding:14px 18px;margin-bottom:16px;display:flex;gap:12px;}
+.callout-info{background:rgba(76,142,201,.08);border:1px solid rgba(76,142,201,.2);}
+.callout-warn{background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.2);}
+.callout-ok{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);}
+.callout-icon{font-size:18px;flex-shrink:0;margin-top:2px;}
+.callout-text{font-size:13px;color:var(--muted);line-height:1.6;}
+.callout-text strong{color:var(--text);}
+
+/* ── BOM TABLE ── */
+.bom{display:grid;grid-template-columns:auto 1fr auto auto;gap:0;background:var(--bg3);border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.06);margin-bottom:20px;}
+.bom-row{display:contents;}
+.bom-row > div{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;}
+.bom-row.header > div{background:rgba(76,142,201,.08);color:var(--blue-l);font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;border-bottom-color:rgba(76,142,201,.15);}
+.bom-row:last-child > div{border-bottom:none;}
+.bom-qty{color:var(--gold);font-weight:600;}
+.bom-price{color:var(--teal);font-family:'DM Mono',monospace;text-align:right;}
+
+/* ── ANIMATIONS ── */
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+.fi{opacity:0;transform:translateY(20px);transition:opacity .6s var(--ease),transform .6s var(--ease);}
+.fi.vis{opacity:1;transform:translateY(0);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .page{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+  .main{padding:24px 16px;}
+}
+</style>
+</head>
+<body>
+
+<div class="bismillah" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Near<span>Pay</span> <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--blue-l);margin-left:6px;">DEV</span></div>
+  <div class="nav-links">
+    <a href="index.html" class="nl back">← Home</a>
+    <a href="how-it-works.html" class="nl">⚙️ How it works</a>
+    <a href="demo.html" class="nl">🎬 Demo</a>
+    <a href="developer.html" class="nl active">👨‍💻 Developer</a>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-section">
+    <div class="sb-title">Overview</div>
+    <a href="#overview" class="sb-link active">System Overview</a>
+    <a href="#bom" class="sb-link">Bill of Materials</a>
+    <a href="#architecture" class="sb-link">Architecture</a>
+  </div>
+  <div class="sb-section">
+    <div class="sb-title">Hardware <span class="sb-chip chip-esp">ESP32-C3</span></div>
+    <a href="#hardware" class="sb-link">ESP32-C3 Specs</a>
+    <a href="#pn532" class="sb-link">PN532 NFC Reader</a>
+    <a href="#wiring" class="sb-link">Wiring Diagram</a>
+    <a href="#firmware" class="sb-link">MicroPython Firmware</a>
+  </div>
+  <div class="sb-section">
+    <div class="sb-title">Backend <span class="sb-chip chip-py">Python</span></div>
+    <a href="#backend" class="sb-link">Python Server</a>
+    <a href="#websocket" class="sb-link">WebSocket Server</a>
+    <a href="#api-routes" class="sb-link">API Routes</a>
+    <a href="#database" class="sb-link">Database Models</a>
+  </div>
+  <div class="sb-section">
+    <div class="sb-title">Frontend</div>
+    <a href="#frontend" class="sb-link">Customer PWA</a>
+    <a href="#dashboard" class="sb-link">Manager Dashboard</a>
+    <a href="#kds" class="sb-link">Kitchen Display</a>
+  </div>
+  <div class="sb-section">
+    <div class="sb-title">Snapshots <span class="sb-chip chip-new">UI</span></div>
+    <a href="#snapshots" class="sb-link">App Screens</a>
+    <a href="#setup" class="sb-link">Setup Guide</a>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+<!-- ══════════════ OVERVIEW ══════════════ -->
+<div class="sec fi" id="overview">
+  <div class="sec-tag tag-arch">System Overview</div>
+  <h2>NearPay<br>Developer Stack</h2>
+  <div class="divider"></div>
+  <p class="lead">Full self-hosted NearPay stack. An ESP32-C3 reads NFC tags and POSTs to a Python server. The server broadcasts via WebSocket to all connected browsers in real time.</p>
+
+  <div class="callout callout-info">
+    <div class="callout-icon">⚡</div>
+    <div class="callout-text"><strong>Stack summary:</strong> ESP32-C3 + PN532 NFC → WiFi → Python FastAPI → WebSocket → HTML/CSS/JS PWA. No cloud required. Runs on a Raspberry Pi or any Linux server.</div>
+  </div>
+
+  <!-- Architecture diagram -->
+  <div id="architecture" style="background:var(--bg3);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:28px;margin-bottom:24px;">
+    <div style="font-size:12px;font-weight:600;color:var(--gold-l);margin-bottom:20px;text-align:center;">Full System Architecture</div>
+
+    <div class="arch-row">
+      <div class="arch-box-dev ab-nfc">
+        <span style="font-size:22px;">📶</span>
+        <span>PN532</span>
+        <span style="font-size:9px;opacity:.6;">NFC Reader</span>
+      </div>
+      <span class="arch-arrow">──I²C──</span>
+      <div class="arch-box-dev ab-esp">
+        <span style="font-size:22px;">🔲</span>
+        <span>ESP32-C3</span>
+        <span style="font-size:9px;opacity:.6;">MicroPython</span>
+      </div>
+      <span class="arch-arrow">──WiFi──▶</span>
+      <div class="arch-box-dev ab-py">
+        <span style="font-size:22px;">🐍</span>
+        <span>Python</span>
+        <span style="font-size:9px;opacity:.6;">FastAPI + aiohttp</span>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;padding-right:60px;">
+      <div style="font-size:20px;color:rgba(255,255,255,.2);margin:4px 0;">↓</div>
+    </div>
+
+    <div class="arch-row" style="justify-content:flex-end;gap:10px;">
+      <div class="arch-box-dev ab-db">
+        <span style="font-size:20px;">🗄️</span>
+        <span>SQLite</span>
+        <span style="font-size:9px;opacity:.6;">orders, sessions</span>
+      </div>
+      <span class="arch-arrow">←</span>
+      <div class="arch-box-dev ab-ws">
+        <span style="font-size:20px;">🔌</span>
+        <span>WebSocket</span>
+        <span style="font-size:9px;opacity:.6;">ws://server:8000</span>
+      </div>
+      <span class="arch-arrow">──▶</span>
+      <div class="arch-box-dev ab-ui">
+        <span style="font-size:20px;">🖥️</span>
+        <span>Browser</span>
+        <span style="font-size:9px;opacity:.6;">PWA / Dashboard / KDS</span>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap;font-size:10px;color:var(--muted);">
+      <span>🟠 ESP32-C3 reads NFC tag</span>
+      <span>→</span>
+      <span>🔵 HTTP POST to Python server</span>
+      <span>→</span>
+      <span>🟢 WebSocket broadcast to all clients</span>
+      <span>→</span>
+      <span>🩵 Browser renders payment page</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ BOM ══════════════ -->
+<div class="sec fi" id="bom">
+  <div class="sec-tag tag-hw">Hardware</div>
+  <h2>Bill of Materials</h2>
+  <div class="divider"></div>
+  <p class="lead">Everything you need for one NearPay table unit. ~18€ per table.</p>
+
+  <div class="bom">
+    <div class="bom-row header">
+      <div>Qty</div><div>Component</div><div>Reference</div><div>Price</div>
+    </div>
+    <div class="bom-row">
+      <div class="bom-qty">1×</div>
+      <div><strong>ESP32-C3 SuperMini</strong><br><span style="font-size:10px;color:var(--muted);">RISC-V · WiFi · BLE · 4MB Flash</span></div>
+      <div><span class="badge-chip bc-info">XIAO ESP32-C3</span></div>
+      <div class="bom-price">~5 €</div>
+    </div>
+    <div class="bom-row">
+      <div class="bom-qty">1×</div>
+      <div><strong>PN532 NFC/RFID Module</strong><br><span style="font-size:10px;color:var(--muted);">I²C · SPI · UART · 13.56 MHz</span></div>
+      <div><span class="badge-chip bc-info">PN532 v3</span></div>
+      <div class="bom-price">~6 €</div>
+    </div>
+    <div class="bom-row">
+      <div class="bom-qty">5×</div>
+      <div><strong>NTAG213 NFC Stickers</strong><br><span style="font-size:10px;color:var(--muted);">144 bytes · ISO 14443-A</span></div>
+      <div><span class="badge-chip bc-ok">NTAG213</span></div>
+      <div class="bom-price">~1 €</div>
+    </div>
+    <div class="bom-row">
+      <div class="bom-qty">1×</div>
+      <div><strong>USB-C Cable (power)</strong><br><span style="font-size:10px;color:var(--muted);">5V from wall adapter or PoE hat</span></div>
+      <div>—</div>
+      <div class="bom-price">~2 €</div>
+    </div>
+    <div class="bom-row">
+      <div class="bom-qty">4×</div>
+      <div><strong>Female-Female Dupont wires</strong><br><span style="font-size:10px;color:var(--muted);">I²C connection (SDA, SCL, VCC, GND)</span></div>
+      <div>—</div>
+      <div class="bom-price">~0.50 €</div>
+    </div>
+    <div class="bom-row">
+      <div class="bom-qty">1×</div>
+      <div><strong>Raspberry Pi / Linux server</strong><br><span style="font-size:10px;color:var(--muted);">Runs Python backend. RPi Zero 2W works fine.</span></div>
+      <div><span class="badge-chip bc-warn">Optional</span></div>
+      <div class="bom-price">~15 €</div>
+    </div>
+    <div class="bom-row" style="background:rgba(201,168,76,.04);">
+      <div class="bom-qty">—</div>
+      <div><strong>Total per table unit</strong></div>
+      <div></div>
+      <div class="bom-price" style="color:var(--gold);font-weight:700;">~14 €</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ ESP32-C3 SPECS ══════════════ -->
+<div class="sec fi" id="hardware">
+  <div class="sec-tag tag-hw">ESP32-C3</div>
+  <h2>ESP32-C3 SuperMini<br>Specifications</h2>
+  <div class="divider"></div>
+
+  <table class="spec-table">
+    <tr><th>Parameter</th><th>Value</th><th>Notes</th></tr>
+    <tr><td>CPU</td><td>RISC-V 32-bit single-core</td><td>160 MHz max</td></tr>
+    <tr><td>Flash</td><td>4 MB</td><td>Enough for MicroPython + scripts</td></tr>
+    <tr><td>RAM</td><td>400 KB SRAM</td><td>~300 KB usable in MicroPython</td></tr>
+    <tr><td>WiFi</td><td>802.11b/g/n (2.4 GHz)</td><td>Station + AP mode</td></tr>
+    <tr><td>Bluetooth</td><td>BLE 5.0</td><td>Optional: beacon detection</td></tr>
+    <tr><td>GPIO</td><td>11 pins</td><td>I²C, SPI, UART, ADC</td></tr>
+    <tr><td>I²C</td><td>GPIO 8 (SDA) · GPIO 9 (SCL)</td><td>Default I²C bus for PN532</td></tr>
+    <tr><td>Operating Voltage</td><td>3.3V logic · 5V USB input</td><td>PN532 also 3.3V</td></tr>
+    <tr><td>Power consumption</td><td>~80mA active · ~5μA deep sleep</td><td>Can run on 18650 battery</td></tr>
+    <tr><td>Size</td><td>22.52 × 18 mm</td><td>SuperMini form factor</td></tr>
+    <tr><td>Firmware</td><td>MicroPython 1.22+</td><td>or Arduino C++ / ESP-IDF</td></tr>
+  </table>
+
+  <div class="callout callout-ok">
+    <div class="callout-icon">💡</div>
+    <div class="callout-text"><strong>Why ESP32-C3?</strong> Smallest WiFi-capable ESP32 variant. Fits inside a badge housing. RISC-V means lower power. Native MicroPython support. At ~5€, it's the most cost-effective option.</div>
+  </div>
+</div>
+
+<!-- ══════════════ PN532 ══════════════ -->
+<div class="sec fi" id="pn532">
+  <div class="sec-tag tag-hw">PN532</div>
+  <h2>PN532 NFC Reader<br>Specifications</h2>
+  <div class="divider"></div>
+
+  <table class="spec-table">
+    <tr><th>Parameter</th><th>Value</th></tr>
+    <tr><td>Chip</td><td>NXP PN532</td></tr>
+    <tr><td>Frequency</td><td>13.56 MHz</td></tr>
+    <tr><td>Protocols</td><td>ISO 14443A/B · ISO 18092 · Felica · MIFARE · NTAG</td></tr>
+    <tr><td>Read range</td><td>Up to 10 cm (passive target)</td></tr>
+    <tr><td>Interface</td><td><span class="badge-chip bc-ok">I²C</span> <span class="badge-chip bc-info">SPI</span> <span class="badge-chip bc-info">UART</span></td></tr>
+    <tr><td>I²C Address</td><td><code style="font-family:'DM Mono',monospace;background:rgba(0,0,0,.3);padding:2px 6px;border-radius:3px;">0x24</code></td></tr>
+    <tr><td>Operating Voltage</td><td>3.3V (compatible with ESP32-C3)</td></tr>
+    <tr><td>Current</td><td>~150mA active</td></tr>
+    <tr><td>Tags supported</td><td>NTAG213 / 215 / 216 · MIFARE Classic · MIFARE DESFire</td></tr>
+    <tr><td>UID length</td><td>4 bytes (MIFARE) · 7 bytes (NTAG)</td></tr>
+  </table>
+
+  <div class="callout callout-warn">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-text"><strong>I²C mode:</strong> On the PN532 module, set the DIP switches to I²C mode (SW1=ON, SW2=OFF) before wiring. Default is UART mode.</div>
+  </div>
+</div>
+
+<!-- ══════════════ WIRING ══════════════ -->
+<div class="sec fi" id="wiring">
+  <div class="sec-tag tag-hw">Wiring</div>
+  <h2>ESP32-C3 ↔ PN532<br>I²C Wiring Diagram</h2>
+  <div class="divider"></div>
+
+  <div class="wiring-box">
+    <div class="wiring-title">I²C Connection — 4 wires</div>
+    <svg viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:580px;display:block;margin:0 auto;">
+      <!-- ESP32-C3 board -->
+      <rect x="30" y="40" width="160" height="180" rx="12" fill="#0F0F1C" stroke="#C9A84C" stroke-width="1.5"/>
+      <text x="110" y="62" fill="#C9A84C" font-size="12" font-weight="700" text-anchor="middle" font-family="DM Mono">ESP32-C3</text>
+      <text x="110" y="76" fill="#8A8070" font-size="8" text-anchor="middle" font-family="DM Mono">SuperMini</text>
+      <!-- ESP32 chip visual -->
+      <rect x="70" y="85" width="80" height="70" rx="4" fill="#161626" stroke="#333" stroke-width="1"/>
+      <text x="110" y="124" fill="#4C8EC9" font-size="9" text-anchor="middle" font-family="DM Mono">RISC-V</text>
+      <text x="110" y="136" fill="#4C8EC9" font-size="8" text-anchor="middle" font-family="DM Mono">ESP32-C3</text>
+      <!-- GPIO pins right side -->
+      <text x="46" y="168" fill="#8A8070" font-size="8" font-family="DM Mono">GND</text>
+      <circle cx="60" cy="165" r="4" fill="#333" stroke="#555" stroke-width="1"/>
+      <text x="46" y="180" fill="#8A8070" font-size="8" font-family="DM Mono">3V3</text>
+      <circle cx="60" cy="177" r="4" fill="#E5C07B" stroke="#C9A84C" stroke-width="1"/>
+      <text x="43" y="192" fill="#8A8070" font-size="8" font-family="DM Mono">G8</text>
+      <circle cx="60" cy="189" r="4" fill="#4CC9A8" stroke="#2A8B6B" stroke-width="1"/>
+      <text x="43" y="204" fill="#8A8070" font-size="8" font-family="DM Mono">G9</text>
+      <circle cx="60" cy="201" r="4" fill="#4C8EC9" stroke="#2A5A8B" stroke-width="1"/>
+      <!-- Label pins -->
+      <text x="165" y="168" fill="#555" font-size="8" font-family="DM Mono" text-anchor="end">GND</text>
+      <text x="165" y="180" fill="#555" font-size="8" font-family="DM Mono" text-anchor="end">3.3V</text>
+      <text x="165" y="192" fill="#4CC9A8" font-size="8" font-family="DM Mono" text-anchor="end">SDA</text>
+      <text x="165" y="204" fill="#4C8EC9" font-size="8" font-family="DM Mono" text-anchor="end">SCL</text>
+      <circle cx="170" cy="165" r="4" fill="#333" stroke="#555" stroke-width="1"/>
+      <circle cx="170" cy="177" r="4" fill="#E5C07B" stroke="#C9A84C" stroke-width="1"/>
+      <circle cx="170" cy="189" r="4" fill="#4CC9A8" stroke="#2A8B6B" stroke-width="1"/>
+      <circle cx="170" cy="201" r="4" fill="#4C8EC9" stroke="#2A5A8B" stroke-width="1"/>
+
+      <!-- PN532 board -->
+      <rect x="410" y="40" width="160" height="180" rx="12" fill="#0F0F1C" stroke="#F97316" stroke-width="1.5"/>
+      <text x="490" y="62" fill="#F97316" font-size="12" font-weight="700" text-anchor="middle" font-family="DM Mono">PN532</text>
+      <text x="490" y="76" fill="#8A8070" font-size="8" text-anchor="middle" font-family="DM Mono">NFC Reader</text>
+      <!-- PN532 chip -->
+      <rect x="450" y="85" width="80" height="70" rx="4" fill="#161626" stroke="#333" stroke-width="1"/>
+      <text x="490" y="120" fill="#F97316" font-size="9" text-anchor="middle" font-family="DM Mono">NXP PN532</text>
+      <text x="490" y="132" fill="#F97316" font-size="8" text-anchor="middle" font-family="DM Mono">13.56 MHz</text>
+      <!-- PN532 pins left side -->
+      <circle cx="420" cy="165" r="4" fill="#333" stroke="#555" stroke-width="1"/>
+      <circle cx="420" cy="177" r="4" fill="#E5C07B" stroke="#C9A84C" stroke-width="1"/>
+      <circle cx="420" cy="189" r="4" fill="#4CC9A8" stroke="#2A8B6B" stroke-width="1"/>
+      <circle cx="420" cy="201" r="4" fill="#4C8EC9" stroke="#2A5A8B" stroke-width="1"/>
+      <text x="435" y="168" fill="#555" font-size="8" font-family="DM Mono">GND</text>
+      <text x="435" y="180" fill="#E5C07B" font-size="8" font-family="DM Mono">VCC</text>
+      <text x="435" y="192" fill="#4CC9A8" font-size="8" font-family="DM Mono">SDA</text>
+      <text x="435" y="204" fill="#4C8EC9" font-size="8" font-family="DM Mono">SCL</text>
+
+      <!-- Wires -->
+      <!-- GND wire (dark gray) -->
+      <line x1="170" y1="165" x2="420" y2="165" stroke="#555" stroke-width="2" stroke-dasharray="4,2"/>
+      <!-- VCC wire (gold) -->
+      <line x1="170" y1="177" x2="420" y2="177" stroke="#C9A84C" stroke-width="2"/>
+      <!-- SDA wire (teal) -->
+      <line x1="170" y1="189" x2="420" y2="189" stroke="#4CC9A8" stroke-width="2.5"/>
+      <!-- SCL wire (blue) -->
+      <line x1="170" y1="201" x2="420" y2="201" stroke="#4C8EC9" stroke-width="2.5"/>
+
+      <!-- Wire labels -->
+      <rect x="268" y="155" width="64" height="14" rx="3" fill="rgba(85,85,85,.3)"/>
+      <text x="300" y="165" fill="#888" font-size="9" text-anchor="middle" font-family="DM Mono">GND</text>
+      <rect x="268" y="169" width="64" height="14" rx="3" fill="rgba(201,168,76,.15)"/>
+      <text x="300" y="179" fill="#C9A84C" font-size="9" text-anchor="middle" font-family="DM Mono">3.3V</text>
+      <rect x="268" y="183" width="64" height="14" rx="3" fill="rgba(76,201,168,.15)"/>
+      <text x="300" y="193" fill="#4CC9A8" font-size="9" text-anchor="middle" font-family="DM Mono">SDA (GPIO8)</text>
+      <rect x="268" y="197" width="64" height="14" rx="3" fill="rgba(76,142,201,.15)"/>
+      <text x="300" y="207" fill="#4C8EC9" font-size="9" text-anchor="middle" font-family="DM Mono">SCL (GPIO9)</text>
+
+      <!-- NFC field visual -->
+      <ellipse cx="490" cy="240" rx="40" ry="8" fill="none" stroke="#F97316" stroke-width="1" opacity="0.4"/>
+      <ellipse cx="490" cy="240" rx="60" ry="12" fill="none" stroke="#F97316" stroke-width="1" opacity="0.25"/>
+      <ellipse cx="490" cy="240" rx="80" ry="16" fill="none" stroke="#F97316" stroke-width="1" opacity="0.12"/>
+      <text x="490" y="256" fill="#F97316" font-size="8" text-anchor="middle" font-family="DM Mono" opacity="0.6">NFC field ≤10cm</text>
+
+      <!-- WiFi symbol on ESP32 -->
+      <text x="110" y="215" fill="#4C8EC9" font-size="9" text-anchor="middle" font-family="DM Mono">📶 WiFi → Python Server</text>
+    </svg>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;font-size:11px;">
+      <div style="background:rgba(0,0,0,.3);border-radius:8px;padding:12px;font-family:'DM Mono',monospace;">
+        <div style="color:var(--gold);margin-bottom:8px;font-weight:600;">ESP32-C3 Pins</div>
+        <div style="color:var(--muted);">GPIO 8 → SDA</div>
+        <div style="color:var(--muted);">GPIO 9 → SCL</div>
+        <div style="color:var(--muted);">3V3    → VCC</div>
+        <div style="color:var(--muted);">GND    → GND</div>
+      </div>
+      <div style="background:rgba(0,0,0,.3);border-radius:8px;padding:12px;font-family:'DM Mono',monospace;">
+        <div style="color:var(--orange);margin-bottom:8px;font-weight:600;">PN532 Settings</div>
+        <div style="color:var(--muted);">SW1 = ON  (I²C)</div>
+        <div style="color:var(--muted);">SW2 = OFF (I²C)</div>
+        <div style="color:var(--muted);">I²C addr: 0x24</div>
+        <div style="color:var(--muted);">VCC: 3.3V only</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ ESP32 FIRMWARE ══════════════ -->
+<div class="sec fi" id="firmware">
+  <div class="sec-tag tag-esp" style="background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.22);color:var(--orange);">MicroPython</div>
+  <h2>ESP32-C3 Firmware</h2>
+  <div class="divider"></div>
+  <p class="lead">MicroPython scripts running on the ESP32-C3. Reads NFC tags via I²C and POSTs to the Python backend over WiFi.</p>
+
+  <div class="file-tabs" id="esp-tabs">
+    <div class="ft on" onclick="switchTab('esp','main')">main.py</div>
+    <div class="ft" onclick="switchTab('esp','pn532')">pn532_i2c.py</div>
+    <div class="ft" onclick="switchTab('esp','config')">config.py</div>
+  </div>
+
+  <div id="esp-main" class="tab-content on">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-filename">📄 main.py <span class="code-lang">MicroPython</span></div>
+        <button class="code-copy" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><span class="c"># NearPay ESP32-C3 — main.py
+# Reads NFC tags via PN532 I2C and POSTs to Python server</span>
+
+<span class="k">import</span> network
+<span class="k">import</span> urequests
+<span class="k">import</span> ujson
+<span class="k">import</span> utime
+<span class="k">from</span> machine <span class="k">import</span> I2C, Pin, reset
+<span class="k">from</span> pn532_i2c <span class="k">import</span> PN532_I2C
+<span class="k">from</span> config <span class="k">import</span> WIFI_SSID, WIFI_PASS, SERVER_URL, TABLE_ID
+
+<span class="c"># ── LED for visual feedback ──</span>
+led = Pin(<span class="num">8</span>, Pin.OUT)  <span class="c"># Built-in LED on some SuperMini boards</span>
+
+<span class="c"># ── Connect to WiFi ──</span>
+<span class="k">def</span> <span class="f">connect_wifi</span>():
+    wlan = network.WLAN(network.STA_IF)
+    wlan.active(<span class="k">True</span>)
+    <span class="k">if not</span> wlan.isconnected():
+        <span class="n">print</span>(<span class="s">f"Connecting to {WIFI_SSID}..."</span>)
+        wlan.connect(WIFI_SSID, WIFI_PASS)
+        timeout = <span class="num">15</span>
+        <span class="k">while not</span> wlan.isconnected() <span class="k">and</span> timeout > <span class="num">0</span>:
+            utime.sleep(<span class="num">1</span>)
+            timeout -= <span class="num">1</span>
+    <span class="k">if</span> wlan.isconnected():
+        <span class="n">print</span>(<span class="s">f"✅ WiFi OK — IP: {wlan.ifconfig()[0]}"</span>)
+        <span class="k">return True</span>
+    <span class="n">print</span>(<span class="s">"❌ WiFi failed — rebooting in 5s"</span>)
+    utime.sleep(<span class="num">5</span>)
+    reset()
+
+<span class="c"># ── POST tap event to Python server ──</span>
+<span class="k">def</span> <span class="f">notify_server</span>(uid_hex: str, raw_uid: list):
+    payload = {
+        <span class="s">"table_id"</span>:  TABLE_ID,
+        <span class="s">"uid"</span>:       uid_hex,
+        <span class="s">"uid_bytes"</span>: raw_uid,
+        <span class="s">"ts"</span>:        utime.time(),
+        <span class="s">"rssi"</span>:      network.WLAN(network.STA_IF).status(<span class="s">"rssi"</span>)
+    }
+    <span class="k">try</span>:
+        r = urequests.post(
+            SERVER_URL + <span class="s">"/nfc/tap"</span>,
+            data=ujson.dumps(payload),
+            headers={<span class="s">"Content-Type"</span>: <span class="s">"application/json"</span>}
+        )
+        resp = r.json()
+        r.close()
+        <span class="k">return</span> resp
+    <span class="k">except Exception as</span> e:
+        <span class="n">print</span>(<span class="s">f"❌ Server error: {e}"</span>)
+        <span class="k">return None</span>
+
+<span class="c"># ── LED blink feedback ──</span>
+<span class="k">def</span> <span class="f">blink</span>(times=<span class="num">1</span>, delay=<span class="num">0.1</span>):
+    <span class="k">for</span> _ <span class="k">in</span> <span class="n">range</span>(times):
+        led.on(); utime.sleep(delay)
+        led.off(); utime.sleep(delay)
+
+<span class="c"># ── Main loop ──</span>
+<span class="k">def</span> <span class="f">main</span>():
+    connect_wifi()
+
+    <span class="c"># Init PN532 on I2C (SDA=GPIO8, SCL=GPIO9)</span>
+    i2c = I2C(<span class="num">0</span>, sda=Pin(<span class="num">8</span>), scl=Pin(<span class="num">9</span>), freq=<span class="num">100000</span>)
+    nfc = PN532_I2C(i2c, debug=<span class="k">False</span>, reset=Pin(<span class="num">10</span>))
+    nfc.SAM_configuration()  <span class="c"># Normal mode, no timeout</span>
+
+    fw = nfc.firmware_version()
+    <span class="n">print</span>(<span class="s">f"✅ PN532 ready — FW: {fw[1]}.{fw[2]}"</span>)
+    <span class="n">print</span>(<span class="s">f"📡 Listening on TABLE_ID: {TABLE_ID}"</span>)
+
+    last_uid = <span class="k">None</span>
+    last_tap_time = <span class="num">0</span>
+
+    <span class="k">while True</span>:
+        uid = nfc.read_passive_target(timeout=<span class="num">500</span>)
+
+        <span class="k">if</span> uid <span class="k">is not None</span>:
+            uid_hex = <span class="s">""</span>.join([<span class="s">f"{b:02X}"</span> <span class="k">for</span> b <span class="k">in</span> uid])
+            now = utime.ticks_ms()
+
+            <span class="c"># Debounce: ignore same tag within 3 seconds</span>
+            <span class="k">if</span> uid_hex != last_uid <span class="k">or</span> utime.ticks_diff(now, last_tap_time) > <span class="num">3000</span>:
+                <span class="n">print</span>(<span class="s">f"\n🏷️ Tag detected: {uid_hex}"</span>)
+                blink(<span class="num">2</span>)  <span class="c"># Visual confirmation</span>
+
+                resp = notify_server(uid_hex, <span class="n">list</span>(uid))
+
+                <span class="k">if</span> resp:
+                    <span class="n">print</span>(<span class="s">f"✅ Server: {resp.get('status')} — {resp.get('table')}"</span>)
+                    blink(<span class="num">3</span>, <span class="num">0.05</span>)  <span class="c"># Success blink</span>
+                <span class="k">else</span>:
+                    <span class="n">print</span>(<span class="s">"⚠️ No server response"</span>)
+
+                last_uid = uid_hex
+                last_tap_time = now
+
+        utime.sleep_ms(<span class="num">100</span>)  <span class="c"># Poll every 100ms</span>
+
+<span class="k">if</span> __name__ == <span class="s">"__main__"</span>:
+    main()</pre>
+    </div>
+  </div>
+
+  <div id="esp-pn532" class="tab-content">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-filename">📄 pn532_i2c.py <span class="code-lang">MicroPython</span></div>
+        <button class="code-copy" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><span class="c"># PN532 I2C driver for MicroPython
+# Supports passive NFC target reading (ISO 14443A)</span>
+
+<span class="k">import</span> utime
+<span class="k">from</span> machine <span class="k">import</span> I2C, Pin
+
+PN532_I2C_ADDRESS  = <span class="num">0x24</span>
+PN532_PREAMBLE     = <span class="num">0x00</span>
+PN532_STARTCODE1   = <span class="num">0x00</span>
+PN532_STARTCODE2   = <span class="num">0xFF</span>
+PN532_HOSTTOPN532  = <span class="num">0xD4</span>
+PN532_PN532TOHOST  = <span class="num">0xD5</span>
+PN532_ACK_WAIT_TIME = <span class="num">10</span>  <span class="c"># ms</span>
+
+<span class="c"># Command codes</span>
+CMD_SAMCONFIGURATION    = <span class="num">0x14</span>
+CMD_GETFIRMWAREVERSION  = <span class="num">0x02</span>
+CMD_INLISTPASSIVETARGET = <span class="num">0x4A</span>
+
+<span class="k">class</span> <span class="f">PN532_I2C</span>:
+    <span class="k">def</span> <span class="f">__init__</span>(self, i2c: I2C, reset=<span class="k">None</span>, debug=<span class="k">False</span>):
+        self.i2c   = i2c
+        self.debug = debug
+        self._reset_pin = reset
+        <span class="k">if</span> reset:
+            reset.init(Pin.OUT, value=<span class="num">1</span>)
+            utime.sleep_ms(<span class="num">100</span>)
+            reset.value(<span class="num">0</span>); utime.sleep_ms(<span class="num">400</span>)
+            reset.value(<span class="num">1</span>); utime.sleep_ms(<span class="num">10</span>)
+        self._wakeup()
+
+    <span class="k">def</span> <span class="f">_wakeup</span>(self):
+        <span class="c"># Send I2C wakeup sequence</span>
+        <span class="k">try</span>:
+            self.i2c.writeto(PN532_I2C_ADDRESS, bytes([<span class="num">0x55</span>]))
+        <span class="k">except</span>:
+            <span class="k">pass</span>
+        utime.sleep_ms(<span class="num">500</span>)
+
+    <span class="k">def</span> <span class="f">_write_frame</span>(self, data: bytes):
+        <span class="n">length</span> = <span class="n">len</span>(data)
+        lcs = (~<span class="n">length</span> + <span class="num">1</span>) & <span class="num">0xFF</span>
+        dcs = (~<span class="n">sum</span>(data) + <span class="num">1</span>) & <span class="num">0xFF</span>
+        frame = bytes([
+            PN532_PREAMBLE, PN532_STARTCODE1, PN532_STARTCODE2,
+            <span class="n">length</span>, lcs, PN532_HOSTTOPN532
+        ]) + data + bytes([dcs, <span class="num">0x00</span>])
+        self.i2c.writeto(PN532_I2C_ADDRESS, frame)
+
+    <span class="k">def</span> <span class="f">_read_data</span>(self, count: int) -> bytes:
+        <span class="c"># Poll until ready (first byte = 0x01)</span>
+        <span class="k">for</span> _ <span class="k">in</span> <span class="n">range</span>(<span class="num">20</span>):
+            data = self.i2c.readfrom(PN532_I2C_ADDRESS, count + <span class="num">1</span>)
+            <span class="k">if</span> data[<span class="num">0</span>] == <span class="num">0x01</span>:
+                <span class="k">return</span> data[<span class="num">1</span>:]
+            utime.sleep_ms(PN532_ACK_WAIT_TIME)
+        <span class="k">raise</span> <span class="n">RuntimeError</span>(<span class="s">"PN532 timeout"</span>)
+
+    <span class="k">def</span> <span class="f">_call_function</span>(self, cmd: int, params=<span class="k">None</span>, response_len=<span class="num">0</span>):
+        data = bytes([cmd]) + (bytes(params) <span class="k">if</span> params <span class="k">else</span> b<span class="s">""</span>)
+        self._write_frame(data)
+        utime.sleep_ms(PN532_ACK_WAIT_TIME)
+        resp = self._read_data(response_len + <span class="num">8</span>)
+        <span class="k">return</span> resp[<span class="num">7</span>:<span class="num">7</span>+response_len] <span class="k">if</span> response_len > <span class="num">0</span> <span class="k">else None</span>
+
+    <span class="k">def</span> <span class="f">firmware_version</span>(self):
+        resp = self._call_function(CMD_GETFIRMWAREVERSION, response_len=<span class="num">4</span>)
+        <span class="k">return</span> resp  <span class="c"># (IC, Ver, Rev, Support)</span>
+
+    <span class="k">def</span> <span class="f">SAM_configuration</span>(self):
+        <span class="c"># Normal mode, no timeout, no IRQ</span>
+        self._call_function(CMD_SAMCONFIGURATION, [<span class="num">0x01</span>, <span class="num">0x14</span>, <span class="num">0x01</span>])
+
+    <span class="k">def</span> <span class="f">read_passive_target</span>(self, card_baud=<span class="num">0x00</span>, timeout=<span class="num">1000</span>) -> bytes | <span class="k">None</span>:
+        <span class="c"># ISO 14443A (NTAG, MIFARE). Returns UID bytes or None.</span>
+        self._write_frame(bytes([CMD_INLISTPASSIVETARGET, <span class="num">0x01</span>, card_baud]))
+        deadline = utime.ticks_ms() + timeout
+        <span class="k">while</span> utime.ticks_diff(deadline, utime.ticks_ms()) > <span class="num">0</span>:
+            <span class="k">try</span>:
+                resp = self._read_data(<span class="num">19</span>)
+                <span class="k">if</span> resp[<span class="num">6</span>] == <span class="num">1</span>:  <span class="c"># Target found</span>
+                    uid_len = resp[<span class="num">12</span>]
+                    <span class="k">return</span> bytes(resp[<span class="num">13</span>:<span class="num">13</span>+uid_len])
+            <span class="k">except</span>:
+                <span class="k">pass</span>
+            utime.sleep_ms(<span class="num">50</span>)
+        <span class="k">return None</span></pre>
+    </div>
+  </div>
+
+  <div id="esp-config" class="tab-content">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-filename">📄 config.py <span class="code-lang">MicroPython</span></div>
+        <button class="code-copy" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><span class="c"># NearPay ESP32-C3 Configuration
+# Edit this file before flashing</span>
+
+<span class="c"># ── WiFi ──</span>
+WIFI_SSID = <span class="s">"NearPay-Restaurant"</span>
+WIFI_PASS = <span class="s">"your-wifi-password"</span>
+
+<span class="c"># ── Python Server ──</span>
+SERVER_URL = <span class="s">"http://192.168.1.100:8000"</span>  <span class="c"># your server IP</span>
+API_KEY    = <span class="s">"np-dev-secret-key-change-me"</span>
+
+<span class="c"># ── This table's identity ──</span>
+TABLE_ID   = <span class="s">"TABLE-12"</span>  <span class="c"># Unique per table</span>
+VENUE_ID   = <span class="s">"le-jardin-orient"</span>
+
+<span class="c"># ── NFC settings ──</span>
+NFC_DEBOUNCE_MS  = <span class="num">3000</span>  <span class="c"># ms between same-tag reads</span>
+NFC_POLL_MS      = <span class="num">100</span>   <span class="c"># ms between NFC polls</span>
+NFC_TIMEOUT_MS   = <span class="num">500</span>   <span class="c"># ms waiting for a tag</span>
+
+<span class="c"># ── I2C pins ──</span>
+I2C_SDA_PIN = <span class="num">8</span>
+I2C_SCL_PIN = <span class="num">9</span>
+I2C_RST_PIN = <span class="num">10</span>
+I2C_FREQ    = <span class="num">100_000</span>  <span class="c"># 100kHz I2C</span></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PYTHON BACKEND ══════════════ -->
+<div class="sec fi" id="backend">
+  <div class="sec-tag tag-sw">Python Backend</div>
+  <h2>Python Server<br>FastAPI + WebSocket</h2>
+  <div class="divider"></div>
+  <p class="lead">A lightweight Python server that receives NFC taps from the ESP32-C3, manages orders, and broadcasts real-time updates to all connected browsers via WebSocket.</p>
+
+  <div class="file-tabs" id="py-tabs">
+    <div class="ft on" onclick="switchTab('py','server')">server.py</div>
+    <div class="ft" onclick="switchTab('py','models')">models.py</div>
+    <div class="ft" onclick="switchTab('py','pos')">pos_mock.py</div>
+    <div class="ft" onclick="switchTab('py','req')">requirements.txt</div>
+  </div>
+
+  <div id="py-server" class="tab-content on">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-filename">📄 server.py <span class="code-lang py">Python</span></div>
+        <button class="code-copy" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><span class="c"># NearPay Python Server — server.py
+# FastAPI + WebSocket + SQLite
+# Run: uvicorn server:app --host 0.0.0.0 --port 8000 --reload</span>
+
+<span class="k">from</span> fastapi <span class="k">import</span> FastAPI, WebSocket, WebSocketDisconnect, HTTPException
+<span class="k">from</span> fastapi.staticfiles <span class="k">import</span> StaticFiles
+<span class="k">from</span> fastapi.middleware.cors <span class="k">import</span> CORSMiddleware
+<span class="k">from</span> fastapi.responses <span class="k">import</span> FileResponse
+<span class="k">from</span> contextlib <span class="k">import</span> asynccontextmanager
+<span class="k">import</span> asyncio, ujson <span class="k">as</span> json, sqlite3
+<span class="k">from</span> datetime <span class="k">import</span> datetime
+<span class="k">from</span> models <span class="k">import</span> NFCTapEvent, OrderItem
+<span class="k">from</span> pos_mock <span class="k">import</span> get_table_order, close_order
+
+<span class="c"># ── WebSocket connection manager ──</span>
+<span class="k">class</span> <span class="f">ConnectionManager</span>:
+    <span class="k">def</span> <span class="f">__init__</span>(self):
+        self.active: <span class="n">dict</span>[str, <span class="n">list</span>[WebSocket]] = {}  <span class="c"># room → clients</span>
+
+    <span class="k">async def</span> <span class="f">connect</span>(self, ws: WebSocket, room: str):
+        <span class="k">await</span> ws.accept()
+        self.active.setdefault(room, []).append(ws)
+        <span class="n">print</span>(<span class="s">f"🔌 WS connected — room={room} total={len(self.active[room])}"</span>)
+
+    <span class="k">def</span> <span class="f">disconnect</span>(self, ws: WebSocket, room: str):
+        <span class="k">if</span> room <span class="k">in</span> self.active:
+            self.active[room].discard(ws)
+
+    <span class="k">async def</span> <span class="f">broadcast</span>(self, room: str, message: <span class="n">dict</span>):
+        <span class="k">if</span> room <span class="k">not in</span> self.active: <span class="k">return</span>
+        dead = []
+        <span class="k">for</span> ws <span class="k">in</span> self.active[room]:
+            <span class="k">try</span>:
+                <span class="k">await</span> ws.send_json(message)
+            <span class="k">except</span>:
+                dead.append(ws)
+        <span class="k">for</span> ws <span class="k">in</span> dead:
+            self.active[room].discard(ws)
+
+manager = ConnectionManager()
+
+<span class="c"># ── Database setup ──</span>
+<span class="k">def</span> <span class="f">init_db</span>():
+    db = sqlite3.connect(<span class="s">"nearpay.db"</span>)
+    db.execute(<span class="s">"""
+        CREATE TABLE IF NOT EXISTS taps (
+            id       INTEGER PRIMARY KEY AUTOINCREMENT,
+            table_id TEXT NOT NULL,
+            uid      TEXT NOT NULL,
+            ts       INTEGER NOT NULL,
+            venue_id TEXT,
+            status   TEXT DEFAULT 'pending'
+        )"""</span>)
+    db.execute(<span class="s">"""
+        CREATE TABLE IF NOT EXISTS payments (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            table_id   TEXT NOT NULL,
+            amount     INTEGER NOT NULL,
+            currency   TEXT DEFAULT 'EUR',
+            status     TEXT DEFAULT 'pending',
+            method     TEXT,
+            created_at TEXT,
+            paid_at    TEXT
+        )"""</span>)
+    db.commit()
+    db.close()
+
+<span class="c"># ── App setup ──</span>
+@asynccontextmanager
+<span class="k">async def</span> <span class="f">lifespan</span>(app: FastAPI):
+    init_db()
+    <span class="n">print</span>(<span class="s">"✅ NearPay server started"</span>)
+    <span class="k">yield</span>
+
+app = FastAPI(title=<span class="s">"NearPay API"</span>, version=<span class="s">"1.0.0"</span>, lifespan=lifespan)
+app.add_middleware(CORSMiddleware, allow_origins=[<span class="s">"*"</span>], allow_methods=[<span class="s">"*"</span>], allow_headers=[<span class="s">"*"</span>])
+app.mount(<span class="s">"/static"</span>, StaticFiles(directory=<span class="s">"static"</span>), name=<span class="s">"static"</span>)
+
+<span class="c"># ════════════════════════════════════════
+# ENDPOINTS
+# ════════════════════════════════════════</span>
+
+<span class="c"># ── Serve customer payment page ──</span>
+@app.get(<span class="s">"/t/{table_id}"</span>)
+<span class="k">async def</span> <span class="f">serve_payment_page</span>(table_id: str):
+    <span class="k">return</span> FileResponse(<span class="s">"static/payment.html"</span>)
+
+<span class="c"># ── Get table order (called by browser) ──</span>
+@app.get(<span class="s">"/api/tables/{table_id}"</span>)
+<span class="k">async def</span> <span class="f">get_table</span>(table_id: str):
+    order = get_table_order(table_id)
+    <span class="k">if not</span> order:
+        <span class="k">raise</span> HTTPException(<span class="num">404</span>, <span class="s">f"Table {table_id} not found or no open order"</span>)
+    <span class="k">return</span> order
+
+<span class="c"># ── ESP32 NFC tap endpoint ──</span>
+@app.post(<span class="s">"/nfc/tap"</span>)
+<span class="k">async def</span> <span class="f">nfc_tap</span>(event: NFCTapEvent):
+    <span class="n">print</span>(<span class="s">f"📡 NFC tap — table={event.table_id} uid={event.uid}"</span>)
+
+    <span class="c"># Save tap to DB</span>
+    db = sqlite3.connect(<span class="s">"nearpay.db"</span>)
+    db.execute(
+        <span class="s">"INSERT INTO taps (table_id, uid, ts) VALUES (?, ?, ?)"</span>,
+        (event.table_id, event.uid, event.ts)
+    )
+    db.commit(); db.close()
+
+    <span class="c"># Fetch order from mock POS</span>
+    order = get_table_order(event.table_id)
+
+    <span class="c"># Broadcast to all WebSocket clients in this venue</span>
+    <span class="k">await</span> manager.broadcast(event.table_id, {
+        <span class="s">"event"</span>: <span class="s">"nfc_tap"</span>,
+        <span class="s">"table"</span>: event.table_id,
+        <span class="s">"uid"</span>:   event.uid,
+        <span class="s">"order"</span>: order,
+        <span class="s">"ts"</span>:    event.ts,
+        <span class="s">"url"</span>:   <span class="s">f"http://server:8000/t/{event.table_id}"</span>
+    })
+
+    <span class="k">return</span> {<span class="s">"status"</span>: <span class="s">"ok"</span>, <span class="s">"table"</span>: event.table_id, <span class="s">"order"</span>: order}
+
+<span class="c"># ── Process payment ──</span>
+@app.post(<span class="s">"/api/pay/{table_id}"</span>)
+<span class="k">async def</span> <span class="f">process_payment</span>(table_id: str, data: <span class="n">dict</span>):
+    order = get_table_order(table_id)
+    <span class="k">if not</span> order:
+        <span class="k">raise</span> HTTPException(<span class="num">404</span>)
+
+    <span class="c"># Save payment</span>
+    db = sqlite3.connect(<span class="s">"nearpay.db"</span>)
+    db.execute(
+        <span class="s">"INSERT INTO payments (table_id, amount, method, status, created_at, paid_at) VALUES (?,?,?,?,?,?)"</span>,
+        (table_id, order[<span class="s">"total"</span>], data.get(<span class="s">"method"</span>, <span class="s">"card"</span>), <span class="s">"paid"</span>,
+         datetime.now().isoformat(), datetime.now().isoformat())
+    )
+    db.commit(); db.close()
+
+    <span class="c"># Close order in POS</span>
+    close_order(table_id)
+
+    <span class="c"># Broadcast payment success</span>
+    <span class="k">await</span> manager.broadcast(table_id, {
+        <span class="s">"event"</span>: <span class="s">"payment_success"</span>,
+        <span class="s">"table"</span>: table_id,
+        <span class="s">"amount"</span>: order[<span class="s">"total"</span>],
+        <span class="s">"ts"</span>: datetime.now().isoformat()
+    })
+    <span class="c"># Also broadcast to dashboard</span>
+    <span class="k">await</span> manager.broadcast(<span class="s">"dashboard"</span>, {
+        <span class="s">"event"</span>: <span class="s">"table_paid"</span>,
+        <span class="s">"table"</span>: table_id,
+        <span class="s">"amount"</span>: order[<span class="s">"total"</span>]
+    })
+    <span class="c"># Broadcast to kitchen</span>
+    <span class="k">await</span> manager.broadcast(<span class="s">"kitchen"</span>, {
+        <span class="s">"event"</span>: <span class="s">"table_paid"</span>,
+        <span class="s">"table"</span>: table_id
+    })
+
+    <span class="k">return</span> {<span class="s">"status"</span>: <span class="s">"paid"</span>, <span class="s">"receipt_id"</span>: <span class="s">f"NP-{table_id}-{int(datetime.now().timestamp())}"</span>}
+
+<span class="c"># ════════════════════════════════════════
+# WEBSOCKET ENDPOINTS
+# ════════════════════════════════════════</span>
+
+<span class="c"># ── Customer (per table) ──</span>
+@app.websocket(<span class="s">"/ws/table/{table_id}"</span>)
+<span class="k">async def</span> <span class="f">ws_table</span>(ws: WebSocket, table_id: str):
+    <span class="k">await</span> manager.connect(ws, table_id)
+    <span class="k">try</span>:
+        <span class="k">while True</span>:
+            data = <span class="k">await</span> ws.receive_text()
+            msg = json.loads(data)
+            <span class="k">if</span> msg.get(<span class="s">"action"</span>) == <span class="s">"ping"</span>:
+                <span class="k">await</span> ws.send_json({<span class="s">"event"</span>: <span class="s">"pong"</span>})
+    <span class="k">except</span> WebSocketDisconnect:
+        manager.disconnect(ws, table_id)
+
+<span class="c"># ── Manager dashboard ──</span>
+@app.websocket(<span class="s">"/ws/dashboard"</span>)
+<span class="k">async def</span> <span class="f">ws_dashboard</span>(ws: WebSocket):
+    <span class="k">await</span> manager.connect(ws, <span class="s">"dashboard"</span>)
+    <span class="k">try</span>:
+        <span class="k">while True</span>:
+            <span class="k">await</span> ws.receive_text()
+    <span class="k">except</span> WebSocketDisconnect:
+        manager.disconnect(ws, <span class="s">"dashboard"</span>)
+
+<span class="c"># ── Kitchen Display System ──</span>
+@app.websocket(<span class="s">"/ws/kitchen"</span>)
+<span class="k">async def</span> <span class="f">ws_kitchen</span>(ws: WebSocket):
+    <span class="k">await</span> manager.connect(ws, <span class="s">"kitchen"</span>)
+    <span class="k">try</span>:
+        <span class="k">while True</span>:
+            <span class="k">await</span> ws.receive_text()
+    <span class="k">except</span> WebSocketDisconnect:
+        manager.disconnect(ws, <span class="s">"kitchen"</span>)</pre>
+    </div>
+  </div>
+
+  <div id="py-models" class="tab-content">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-filename">📄 models.py <span class="code-lang py">Python</span></div>
+        <button class="code-copy" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><span class="k">from</span> pydantic <span class="k">import</span> BaseModel
+<span class="k">from</span> typing <span class="k">import</span> Optional, List
+<span class="k">from</span> datetime <span class="k">import</span> datetime
+
+<span class="k">class</span> <span class="f">NFCTapEvent</span>(BaseModel):
+    table_id:  str
+    uid:       str           <span class="c"># NFC UID hex string e.g. "A3F9B2C1"</span>
+    uid_bytes: List[int]     <span class="c"># Raw bytes [163, 249, 178, 193]</span>
+    ts:        int           <span class="c"># Unix timestamp from ESP32</span>
+    rssi:      Optional[int] <span class="c"># WiFi signal strength (dBm)</span>
+    venue_id:  Optional[str]
+
+<span class="k">class</span> <span class="f">OrderItem</span>(BaseModel):
+    sku:         str
+    name:        str
+    qty:         int
+    unit_price:  int         <span class="c"># in cents</span>
+    line_total:  int
+
+<span class="k">class</span> <span class="f">Order</span>(BaseModel):
+    table_id:   str
+    order_id:   str
+    status:     str          <span class="c"># "open" | "paying" | "closed"</span>
+    items:      List[OrderItem]
+    subtotal:   int
+    tax:        int
+    total:      int          <span class="c"># in cents</span>
+    currency:   str = <span class="s">"EUR"</span>
+    opened_at:  datetime
+    server_id:  Optional[str]
+
+<span class="k">class</span> <span class="f">PaymentRequest</span>(BaseModel):
+    table_id:  str
+    amount:    int           <span class="c"># must match order total</span>
+    method:    str           <span class="c"># "apple_pay" | "google_pay" | "card"</span>
+    token:     Optional[str] <span class="c"># Stripe payment method token</span>
+    split:     Optional[int] <span class="c"># number of people splitting</span>
+
+<span class="k">class</span> <span class="f">WebSocketMessage</span>(BaseModel):
+    event:  str
+    table:  Optional[str]
+    data:   Optional[dict]
+    ts:     Optional[str]</pre>
+    </div>
+  </div>
+
+  <div id="py-pos" class="tab-content">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-filename">📄 pos_mock.py <span class="code-lang py">Python</span></div>
+        <button class="code-copy" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><span class="c"># Mock POS system — replace with real POS API integration
+# Simulates Lightspeed / Zelty / Cashpad responses</span>
+
+<span class="k">from</span> datetime <span class="k">import</span> datetime, timedelta
+<span class="k">import</span> random
+
+<span class="c"># In-memory orders (replace with DB or real POS API)</span>
+MOCK_ORDERS = {
+    <span class="s">"TABLE-12"</span>: {
+        <span class="s">"table_id"</span>:  <span class="s">"TABLE-12"</span>,
+        <span class="s">"order_id"</span>:  <span class="s">"POS-847291"</span>,
+        <span class="s">"status"</span>:    <span class="s">"open"</span>,
+        <span class="s">"server_id"</span>: <span class="s">"farid"</span>,
+        <span class="s">"opened_at"</span>: (datetime.now() - timedelta(minutes=<span class="num">45</span>)).isoformat(),
+        <span class="s">"items"</span>: [
+            {<span class="s">"sku"</span>:<span class="s">"SMEN-001"</span>, <span class="s">"name"</span>:<span class="s">"Houmous maison"</span>,   <span class="s">"qty"</span>:<span class="num">1</span>, <span class="s">"unit_price"</span>:<span class="num">900</span>,  <span class="s">"line_total"</span>:<span class="num">900</span>},
+            {<span class="s">"sku"</span>:<span class="s">"SPLAT-003"</span>,<span class="s">"name"</span>:<span class="s">"Tajine agneau"</span>,   <span class="s">"qty"</span>:<span class="num">1</span>, <span class="s">"unit_price"</span>:<span class="num">2400</span>, <span class="s">"line_total"</span>:<span class="num">2400</span>},
+            {<span class="s">"sku"</span>:<span class="s">"SPLAT-007"</span>,<span class="s">"name"</span>:<span class="s">"Couscous royal"</span>,  <span class="s">"qty"</span>:<span class="num">1</span>, <span class="s">"unit_price"</span>:<span class="num">2800</span>, <span class="s">"line_total"</span>:<span class="num">2800</span>},
+            {<span class="s">"sku"</span>:<span class="s">"SDRK-002"</span>, <span class="s">"name"</span>:<span class="s">"Thé menthe"</span>,      <span class="s">"qty"</span>:<span class="num">4</span>, <span class="s">"unit_price"</span>:<span class="num">400</span>,  <span class="s">"line_total"</span>:<span class="num">1600</span>},
+            {<span class="s">"sku"</span>:<span class="s">"SDES-001"</span>, <span class="s">"name"</span>:<span class="s">"Baklava (x4)"</span>,    <span class="s">"qty"</span>:<span class="num">1</span>, <span class="s">"unit_price"</span>:<span class="num">1300</span>, <span class="s">"line_total"</span>:<span class="num">1300</span>},
+        ],
+        <span class="s">"subtotal"</span>: <span class="num">9000</span>,
+        <span class="s">"tax"</span>:      <span class="num">900</span>,
+        <span class="s">"total"</span>:    <span class="num">9900</span>,
+    },
+    <span class="s">"TABLE-7"</span>: {
+        <span class="s">"table_id"</span>:  <span class="s">"TABLE-7"</span>,
+        <span class="s">"order_id"</span>:  <span class="s">"POS-847292"</span>,
+        <span class="s">"status"</span>:    <span class="s">"open"</span>,
+        <span class="s">"server_id"</span>: <span class="s">"amina"</span>,
+        <span class="s">"opened_at"</span>: (datetime.now() - timedelta(minutes=<span class="num">20</span>)).isoformat(),
+        <span class="s">"items"</span>: [
+            {<span class="s">"sku"</span>:<span class="s">"SPLAT-010"</span>,<span class="s">"name"</span>:<span class="s">"Entrecôte"</span>, <span class="s">"qty"</span>:<span class="num">2</span>, <span class="s">"unit_price"</span>:<span class="num">2800</span>, <span class="s">"line_total"</span>:<span class="num">5600</span>},
+            {<span class="s">"sku"</span>:<span class="s">"SDRK-005"</span>, <span class="s">"name"</span>:<span class="s">"Vin rouge"</span>, <span class="s">"qty"</span>:<span class="num">1</span>, <span class="s">"unit_price"</span>:<span class="num">2200</span>, <span class="s">"line_total"</span>:<span class="num">2200</span>},
+        ],
+        <span class="s">"subtotal"</span>: <span class="num">7800</span>,
+        <span class="s">"tax"</span>:      <span class="num">780</span>,
+        <span class="s">"total"</span>:    <span class="num">8580</span>,
+    }
+}
+
+<span class="k">def</span> <span class="f">get_table_order</span>(table_id: str) -> dict | <span class="k">None</span>:
+    <span class="k">return</span> MOCK_ORDERS.get(table_id)
+
+<span class="k">def</span> <span class="f">close_order</span>(table_id: str) -> bool:
+    <span class="k">if</span> table_id <span class="k">in</span> MOCK_ORDERS:
+        MOCK_ORDERS[table_id][<span class="s">"status"</span>] = <span class="s">"closed"</span>
+        <span class="n">print</span>(<span class="s">f"✅ POS: Order {MOCK_ORDERS[table_id]['order_id']} closed"</span>)
+        <span class="k">return True</span>
+    <span class="k">return False</span>
+
+<span class="c"># ── To integrate real POS (Lightspeed example) ──
+# import httpx
+# async def get_table_order_real(table_id: str):
+#     async with httpx.AsyncClient() as client:
+#         r = await client.get(
+#             f"https://api.lightspeedhq.com/account/{ACCOUNT}/sale/{table_id}",
+#             headers={"Authorization": f"Bearer {LIGHTSPEED_TOKEN}"}
+#         )
+#         return r.json()</span></pre>
+    </div>
+  </div>
+
+  <div id="py-req" class="tab-content">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-filename">📄 requirements.txt <span class="code-lang sh">Shell</span></div>
+        <button class="code-copy" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><span class="c"># NearPay Python Server Dependencies</span>
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+pydantic==2.7.1
+websockets==12.0
+python-multipart==0.0.9
+aiofiles==23.2.1
+httpx==0.27.0          <span class="c"># for async HTTP calls to real POS APIs</span>
+ujson==5.10.0          <span class="c"># fast JSON</span>
+python-jose==3.3.0     <span class="c"># JWT auth (optional)</span>
+
+<span class="c"># Install:
+# pip install -r requirements.txt
+
+# Run server:
+# uvicorn server:app --host 0.0.0.0 --port 8000 --reload
+
+# Run with auto-reload in dev:
+# uvicorn server:app --host 0.0.0.0 --port 8000 --reload --log-level debug</span></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ FRONTEND ══════════════ -->
+<div class="sec fi" id="frontend">
+  <div class="sec-tag tag-code">Frontend</div>
+  <h2>Customer PWA<br>HTML · CSS · JS</h2>
+  <div class="divider"></div>
+  <p class="lead">The customer-facing payment page. Served by the Python server, connects to WebSocket, displays the order and handles payment.</p>
+
+  <div class="file-tabs" id="fe-tabs">
+    <div class="ft on" onclick="switchTab('fe','payment')">payment.html</div>
+    <div class="ft" onclick="switchTab('fe','dashboard')">dashboard.html</div>
+    <div class="ft" onclick="switchTab('fe','kds')">kitchen.html</div>
+  </div>
+
+  <div id="fe-payment" class="tab-content on">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-filename">📄 static/payment.html <span class="code-lang html">HTML</span></div>
+        <button class="code-copy" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><span class="k">&lt;!DOCTYPE html&gt;
+&lt;html</span> lang=<span class="s">"fr"</span><span class="k">&gt;
+&lt;head&gt;</span>
+  <span class="k">&lt;meta</span> charset=<span class="s">"UTF-8"</span><span class="k">&gt;</span>
+  <span class="k">&lt;meta</span> name=<span class="s">"viewport"</span> content=<span class="s">"width=device-width,initial-scale=1"</span><span class="k">&gt;</span>
+  <span class="k">&lt;meta</span> name=<span class="s">"theme-color"</span> content=<span class="s">"#C9A84C"</span><span class="k">&gt;</span>
+  <span class="k">&lt;link</span> rel=<span class="s">"manifest"</span> href=<span class="s">"/static/manifest.json"</span><span class="k">&gt;</span>
+  <span class="k">&lt;title&gt;</span>NearPay<span class="k">&lt;/title&gt;</span>
+  <span class="k">&lt;style&gt;</span>
+    :root{--gold:#C9A84C;--bg:#F8F7F4;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:system-ui,sans-serif;background:var(--bg);min-height:100vh;}
+    .header{background:linear-gradient(135deg,#8B6914,#C9A84C);
+            padding:16px;text-align:center;color:rgba(0,0,0,.8);}
+    .restaurant{font-size:18px;font-weight:700;}
+    .table-info{font-size:12px;opacity:.7;margin-top:4px;}
+    .status{padding:16px;text-align:center;font-size:13px;color:#666;}
+    .items{padding:0 16px;}
+    .item{display:flex;justify-content:space-between;padding:12px 0;
+          border-bottom:1px solid rgba(0,0,0,.08);font-size:14px;}
+    .item-name{flex:1;color:#333;}
+    .item-qty{color:#999;margin-right:8px;font-size:12px;}
+    .item-price{font-weight:600;color:#111;}
+    .total-row{display:flex;justify-content:space-between;
+               font-size:18px;font-weight:700;padding:16px;}
+    .btn{width:calc(100% - 32px);margin:8px 16px;padding:14px;
+         border:none;border-radius:12px;font-size:15px;
+         font-weight:600;cursor:pointer;}
+    .btn-pay{background:#000;color:#fff;}
+    .btn-split{background:#EEEAE0;color:#333;}
+    .loading{text-align:center;padding:40px;color:#999;}
+    .success{text-align:center;padding:40px;}
+    .success-icon{font-size:64px;margin-bottom:16px;}
+    .success-title{font-size:22px;font-weight:700;color:#22C55E;}
+  <span class="k">&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;</span>
+  <span class="k">&lt;div</span> class=<span class="s">"header"</span><span class="k">&gt;</span>
+    <span class="k">&lt;div</span> class=<span class="s">"restaurant"</span> id=<span class="s">"restaurantName"</span><span class="k">&gt;</span>NearPay<span class="k">&lt;/div&gt;</span>
+    <span class="k">&lt;div</span> class=<span class="s">"table-info"</span> id=<span class="s">"tableInfo"</span><span class="k">&gt;</span>Chargement...<span class="k">&lt;/div&gt;</span>
+  <span class="k">&lt;/div&gt;</span>
+
+  <span class="k">&lt;div</span> id=<span class="s">"app"</span><span class="k">&gt;
+    &lt;div</span> class=<span class="s">"loading"</span><span class="k">&gt;</span>⏳ Récupération de votre addition...<span class="k">&lt;/div&gt;
+  &lt;/div&gt;</span>
+
+  <span class="k">&lt;script&gt;</span>
+    <span class="c">// Extract table ID from URL</span>
+    const tableId = location.pathname.split(<span class="s">'/'</span>).pop();
+    const serverBase = <span class="s">`http://${location.hostname}:8000`</span>;
+
+    <span class="c">// Fetch order from API</span>
+    <span class="n">fetch</span>(<span class="s">`${serverBase}/api/tables/${tableId}`</span>)
+      .then(r => r.json())
+      .then(order => renderOrder(order))
+      .catch(() => renderError());
+
+    <span class="c">// WebSocket — receive real-time updates</span>
+    const ws = new WebSocket(<span class="s">`ws://${location.hostname}:8000/ws/table/${tableId}`</span>);
+    ws.onmessage = (e) => {
+      const msg = JSON.parse(e.data);
+      <span class="k">if</span> (msg.event === <span class="s">'payment_success'</span>) renderSuccess(msg);
+    };
+
+    <span class="k">function</span> <span class="f">renderOrder</span>(order) {
+      document.getElementById(<span class="s">'restaurantName'</span>).textContent = <span class="s">'Le Jardin d\'Orient'</span>;
+      document.getElementById(<span class="s">'tableInfo'</span>).textContent =
+        <span class="s">`${order.table_id} · Total : ${(order.total/100).toFixed(2)} €`</span>;
+      const app = document.getElementById(<span class="s">'app'</span>);
+      app.innerHTML = <span class="s">`
+        &lt;div class="items"&gt;
+          ${order.items.map(i => <span class="s">`
+            &lt;div class="item"&gt;
+              &lt;span class="item-qty"&gt;${i.qty}×&lt;/span&gt;
+              &lt;span class="item-name"&gt;${i.name}&lt;/span&gt;
+              &lt;span class="item-price"&gt;${(i.line_total/100).toFixed(2)} €&lt;/span&gt;
+            &lt;/div&gt;`</span>).join(<span class="s">''</span>)}
+        &lt;/div&gt;
+        &lt;div class="total-row"&gt;
+          &lt;span&gt;Total&lt;/span&gt;
+          &lt;span&gt;${(order.total/100).toFixed(2)} €&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;button class="btn btn-pay" onclick="pay('${order.table_id}', ${order.total})"&gt;
+          🍎 Payer ${(order.total/100).toFixed(2)} € · Apple Pay
+        &lt;/button&gt;
+        &lt;button class="btn btn-split" onclick="alert('Split bill coming soon!')"&gt;
+          ➗ Partager l\'addition
+        &lt;/button&gt;`</span>;
+    }
+
+    <span class="k">function</span> <span class="f">pay</span>(tableId, amount) {
+      <span class="n">fetch</span>(<span class="s">`${serverBase}/api/pay/${tableId}`</span>, {
+        method: <span class="s">'POST'</span>,
+        headers: {<span class="s">'Content-Type'</span>: <span class="s">'application/json'</span>},
+        body: JSON.stringify({ amount, method: <span class="s">'apple_pay'</span> })
+      }).then(r => r.json()).then(renderSuccess);
+    }
+
+    <span class="k">function</span> <span class="f">renderSuccess</span>(data) {
+      document.getElementById(<span class="s">'app'</span>).innerHTML = <span class="s">`
+        &lt;div class="success"&gt;
+          &lt;div class="success-icon"&gt;✅&lt;/div&gt;
+          &lt;div class="success-title"&gt;Paiement réussi !&lt;/div&gt;
+          &lt;p style="color:#666;margin-top:8px"&gt;Merci et bonne soirée ! 👋&lt;/p&gt;
+          &lt;p style="font-family:monospace;font-size:11px;color:#999;margin-top:16px"&gt;
+            ${data.receipt_id || 'NP-OK'}
+          &lt;/p&gt;
+        &lt;/div&gt;`</span>;
+    }
+
+    <span class="k">function</span> <span class="f">renderError</span>() {
+      document.getElementById(<span class="s">'app'</span>).innerHTML =
+        <span class="s">'&lt;div class="loading"&gt;❌ Table introuvable&lt;/div&gt;'</span>;
+    }
+  <span class="k">&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</span></pre>
+    </div>
+  </div>
+
+  <div id="fe-dashboard" class="tab-content">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-filename">📄 static/dashboard.html <span class="code-lang html">HTML</span></div>
+        <button class="code-copy" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><span class="c">&lt;!-- Manager Dashboard — connects to /ws/dashboard --&gt;</span>
+<span class="k">&lt;script&gt;</span>
+  const ws = new WebSocket(<span class="s">`ws://${location.hostname}:8000/ws/dashboard`</span>);
+
+  ws.onopen = () => {
+    console.log(<span class="s">'✅ Dashboard connected'</span>);
+    updateStatus(<span class="g">'online'</span>);
+  };
+
+  ws.onmessage = (e) => {
+    const msg = JSON.parse(e.data);
+    switch(msg.event) {
+      <span class="k">case</span> <span class="s">'nfc_tap'</span>:
+        showNotification(<span class="s">`📡 Table ${msg.table} tapped — ${msg.order?.total/100}€`</span>, <span class="s">'info'</span>);
+        updateTable(msg.table, <span class="s">'paying'</span>);
+        <span class="k">break</span>;
+      <span class="k">case</span> <span class="s">'table_paid'</span>:
+        showNotification(<span class="s">`✅ Table ${msg.table} payée — ${msg.amount/100}€`</span>, <span class="s">'success'</span>);
+        updateTable(msg.table, <span class="s">'free'</span>);
+        updateRevenue(msg.amount);
+        <span class="k">break</span>;
+    }
+  };
+
+  ws.onclose = () => updateStatus(<span class="r">'offline'</span>);
+
+  <span class="k">function</span> <span class="f">updateTable</span>(tableId, status) {
+    const el = document.querySelector(<span class="s">`[data-table="${tableId}"]`</span>);
+    <span class="k">if</span>(el) el.className = <span class="s">`table-card ${status}`</span>;
+  }
+<span class="k">&lt;/script&gt;</span></pre>
+    </div>
+  </div>
+
+  <div id="fe-kds" class="tab-content">
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-filename">📄 static/kitchen.html <span class="code-lang html">HTML</span></div>
+        <button class="code-copy" onclick="copyCode(this)">Copy</button>
+      </div>
+      <pre><span class="c">&lt;!-- KDS — Kitchen Display System —
+     Fullscreen display for the kitchen
+     Connects to /ws/kitchen --&gt;</span>
+<span class="k">&lt;script&gt;</span>
+  const ws = new WebSocket(<span class="s">`ws://${location.hostname}:8000/ws/kitchen`</span>);
+  const orders = new Map();
+
+  ws.onmessage = (e) => {
+    const msg = JSON.parse(e.data);
+
+    <span class="k">switch</span>(msg.event) {
+      <span class="k">case</span> <span class="s">'new_order_item'</span>:
+        <span class="c">// New item ordered from customer phone</span>
+        addKDSCard({
+          table: msg.table,
+          item: msg.item,
+          qty: msg.qty,
+          note: msg.note,
+          ts: Date.now()
+        });
+        playChime();
+        <span class="k">break</span>;
+
+      <span class="k">case</span> <span class="s">'table_paid'</span>:
+        <span class="c">// Mark table cards as complete</span>
+        markTableDone(msg.table);
+        <span class="k">break</span>;
+    }
+  };
+
+  <span class="k">function</span> <span class="f">addKDSCard</span>(order) {
+    const card = document.createElement(<span class="s">'div'</span>);
+    card.className = <span class="s">'kds-card'</span>;
+    card.dataset.table = order.table;
+    card.innerHTML = <span class="s">`
+      &lt;div class="kds-table"&gt;TABLE ${order.table.replace('TABLE-','')}&lt;/div&gt;
+      &lt;div class="kds-item"&gt;${order.qty}× ${order.item}&lt;/div&gt;
+      ${order.note ? <span class="s">`&lt;div class="kds-note"&gt;📝 ${order.note}&lt;/div&gt;`</span> : <span class="s">''</span>}
+      &lt;div class="kds-timer" id="timer-${Date.now()}"&gt;0:00&lt;/div&gt;
+    `</span>;
+    document.getElementById(<span class="s">'kds-grid'</span>).appendChild(card);
+    startTimer(card.querySelector(<span class="s">'.kds-timer'</span>));
+  }
+
+  <span class="k">function</span> <span class="f">startTimer</span>(el) {
+    const start = Date.now();
+    setInterval(() => {
+      const s = Math.floor((Date.now()-start)/1000);
+      const m = Math.floor(s/60);
+      el.textContent = <span class="s">`${m}:${(s%60).toString().padStart(2,'0')}`</span>;
+      el.className = <span class="s">`kds-timer${s>300?<span class="r">' urgent'</span>:s>120?<span class="y">' warn'</span>:''}`</span>;
+    }, 1000);
+  }
+
+  <span class="k">function</span> <span class="f">playChime</span>() {
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    osc.connect(ctx.destination);
+    osc.frequency.value = 880;
+    osc.start(); osc.stop(ctx.currentTime + 0.15);
+  }
+<span class="k">&lt;/script&gt;</span></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ WEB APP SNAPSHOTS ══════════════ -->
+<div class="sec fi" id="snapshots">
+  <div class="sec-tag tag-ui">UI Snapshots</div>
+  <h2>App Screens</h2>
+  <div class="divider"></div>
+  <p class="lead">Live-rendered mockups of all three NearPay interfaces. What each actor sees in their browser.</p>
+
+  <div class="snapshots-grid">
+
+    <!-- Customer payment page -->
+    <div class="snapshot">
+      <div class="browser">
+        <div class="browser-bar">
+          <div class="b-dots"><span class="b-dot" style="background:#FF5F57"></span><span class="b-dot" style="background:#FEBC2E"></span><span class="b-dot" style="background:#28C840"></span></div>
+          <div class="b-url">192.168.1.100:8000/t/TABLE-12</div>
+        </div>
+        <div class="browser-content">
+          <div class="payment-page">
+            <div class="pp-header">
+              <div class="pp-logo">🍽️ Le Jardin d'Orient</div>
+              <div class="pp-table">Table 12 · 3 personnes · 20:47</div>
+            </div>
+            <div class="pp-items">
+              <div class="pp-item"><span>1× Houmous maison</span><span>9,00 €</span></div>
+              <div class="pp-item"><span>1× Tajine agneau</span><span>24,00 €</span></div>
+              <div class="pp-item"><span>1× Couscous royal</span><span>28,00 €</span></div>
+              <div class="pp-item"><span>4× Thé menthe</span><span>16,00 €</span></div>
+              <div class="pp-item"><span>1× Baklava</span><span>13,00 €</span></div>
+            </div>
+            <div class="pp-total"><span>Total TTC</span><span>99,00 €</span></div>
+            <div class="pp-btn">🍎 Payer 99,00 € · Apple Pay</div>
+            <div style="margin:4px 10px 8px;padding:7px;background:#EEEAE0;border-radius:7px;text-align:center;font-size:10px;color:#666;">➗ Partager à 3 · 33,00 €/pers</div>
+          </div>
+        </div>
+      </div>
+      <div class="snap-label">📱 Customer Payment Page — served from Python</div>
+    </div>
+
+    <!-- Manager dashboard -->
+    <div class="snapshot">
+      <div class="browser">
+        <div class="browser-bar">
+          <div class="b-dots"><span class="b-dot" style="background:#FF5F57"></span><span class="b-dot" style="background:#FEBC2E"></span><span class="b-dot" style="background:#28C840"></span></div>
+          <div class="b-url">192.168.1.100:8000/static/dashboard.html</div>
+        </div>
+        <div class="browser-content">
+          <div class="dash">
+            <div class="dash-nav">
+              <div class="dash-logo">NearPay</div>
+              <div class="dash-status"><div class="dash-dot"></div>WebSocket live</div>
+            </div>
+            <div class="tables-grid-mini">
+              <div class="table-mini occupied"><div class="t-num">T1</div><div class="t-amt">64€</div><div class="t-status">En cours</div></div>
+              <div class="table-mini paying"><div class="t-num">T2</div><div class="t-amt">✅</div><div class="t-status">Payée</div></div>
+              <div class="table-mini occupied"><div class="t-num">T3</div><div class="t-amt">31€</div><div class="t-status">En cours</div></div>
+              <div class="table-mini free"><div class="t-num">T4</div><div class="t-amt">—</div><div class="t-status">Libre</div></div>
+              <div class="table-mini occupied" style="border-color:rgba(76,142,201,.4);background:rgba(76,142,201,.08)"><div class="t-num">T5</div><div class="t-amt">📡</div><div class="t-status">Tap!</div></div>
+              <div class="table-mini occupied"><div class="t-num">T6</div><div class="t-amt">99€</div><div class="t-status">En cours</div></div>
+              <div class="table-mini free"><div class="t-num">T7</div><div class="t-amt">—</div><div class="t-status">Libre</div></div>
+              <div class="table-mini occupied"><div class="t-num">T8</div><div class="t-amt">147€</div><div class="t-status">En cours</div></div>
+            </div>
+            <div class="dash-stats">
+              <div class="ds"><div class="ds-val">847€</div><div class="ds-lbl">CA ce soir</div></div>
+              <div class="ds"><div class="ds-val">7/8</div><div class="ds-lbl">Tables</div></div>
+              <div class="ds"><div class="ds-val">47€</div><div class="ds-lbl">Ticket moy.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="snap-label">🖥️ Manager Dashboard — WebSocket live updates</div>
+    </div>
+
+    <!-- Kitchen display -->
+    <div class="snapshot">
+      <div class="browser">
+        <div class="browser-bar">
+          <div class="b-dots"><span class="b-dot" style="background:#FF5F57"></span><span class="b-dot" style="background:#FEBC2E"></span><span class="b-dot" style="background:#28C840"></span></div>
+          <div class="b-url">192.168.1.100:8000/static/kitchen.html</div>
+        </div>
+        <div class="browser-content">
+          <div class="kds">
+            <div class="kds-header">
+              <div class="kds-title">● KDS — Cuisine</div>
+              <div class="kds-time">20:47:32</div>
+            </div>
+            <div class="kds-cards">
+              <div class="kds-card urgent">
+                <div class="kds-card-table">TABLE 3</div>
+                <div class="kds-item">1× Tajine agneau</div>
+                <div class="kds-item">1× Couscous</div>
+                <div class="kds-timer urgent">7:24 ⚠️</div>
+              </div>
+              <div class="kds-card">
+                <div class="kds-card-table">TABLE 6</div>
+                <div class="kds-item">2× Entrecôte</div>
+                <div class="kds-item" style="color:#C9A84C;">📝 saignant</div>
+                <div class="kds-timer warn">3:11</div>
+              </div>
+              <div class="kds-card">
+                <div class="kds-card-table">TABLE 8</div>
+                <div class="kds-item">📱 Commande client</div>
+                <div class="kds-item">1× Rosé 25cl</div>
+                <div class="kds-timer">0:48</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="snap-label">🍳 Kitchen Display (KDS) — orders in real time</div>
+    </div>
+
+    <!-- ESP32 terminal -->
+    <div class="snapshot">
+      <div class="browser">
+        <div class="browser-bar">
+          <div class="b-dots"><span class="b-dot" style="background:#FF5F57"></span><span class="b-dot" style="background:#FEBC2E"></span><span class="b-dot" style="background:#28C840"></span></div>
+          <div class="b-url">Thonny IDE — ESP32-C3 Serial Monitor</div>
+        </div>
+        <div class="browser-content">
+          <div class="terminal">
+            <div class="t-line"><span class="t-prompt">MicroPython v1.22.0</span> — ESP32-C3</div>
+            <div class="t-line">Connecting to NearPay-Restaurant...</div>
+            <div class="t-ok">✅ WiFi OK — IP: 192.168.1.142</div>
+            <div class="t-ok">✅ PN532 ready — FW: 1.6</div>
+            <div class="t-info">📡 Listening on TABLE_ID: TABLE-12</div>
+            <div class="t-line" style="margin-top:6px;">—</div>
+            <div class="t-warn">🏷️ Tag detected: A3F9B2C1</div>
+            <div class="t-info">→ POST /nfc/tap ...</div>
+            <div class="t-ok">✅ Server: ok — TABLE-12</div>
+            <div class="t-line">—</div>
+            <div class="t-warn">🏷️ Tag detected: B7E2A410</div>
+            <div class="t-info">→ POST /nfc/tap ...</div>
+            <div class="t-ok">✅ Server: ok — TABLE-12</div>
+          </div>
+        </div>
+      </div>
+      <div class="snap-label">🔲 ESP32-C3 Serial Output — Thonny IDE</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════ SETUP GUIDE ══════════════ -->
+<div class="sec fi" id="setup">
+  <div class="sec-tag tag-sw">Setup Guide</div>
+  <h2>Get Running<br>in 15 minutes</h2>
+  <div class="divider"></div>
+
+  <div class="install-steps">
+    <div class="install-step">
+      <div class="install-step-body">
+        <h4>Flash MicroPython on ESP32-C3</h4>
+        <p>Download MicroPython for ESP32-C3 from micropython.org. Flash with esptool.</p>
+        <div class="code-wrap" style="margin-top:10px;">
+          <div class="code-header"><div class="code-filename"><span class="code-lang sh">Shell</span></div></div>
+          <pre>pip install esptool thonny
+esptool.py --chip esp32c3 erase_flash
+esptool.py --chip esp32c3 write_flash 0x0 micropython-esp32c3.bin</pre>
+        </div>
+      </div>
+    </div>
+    <div class="install-step">
+      <div class="install-step-body">
+        <h4>Upload ESP32 files via Thonny</h4>
+        <p>Open Thonny IDE. Connect to ESP32-C3. Upload <code>main.py</code>, <code>pn532_i2c.py</code>, <code>config.py</code>. Edit <code>config.py</code> with your WiFi and server IP.</p>
+      </div>
+    </div>
+    <div class="install-step">
+      <div class="install-step-body">
+        <h4>Install Python server</h4>
+        <div class="code-wrap" style="margin-top:10px;">
+          <div class="code-header"><div class="code-filename"><span class="code-lang sh">Shell</span></div></div>
+          <pre>git clone https://github.com/your-org/nearpay-server
+cd nearpay-server
+pip install -r requirements.txt
+mkdir static
+cp *.html static/     # Copy frontend files</pre>
+        </div>
+      </div>
+    </div>
+    <div class="install-step">
+      <div class="install-step-body">
+        <h4>Start the Python server</h4>
+        <div class="code-wrap" style="margin-top:10px;">
+          <div class="code-header"><div class="code-filename"><span class="code-lang sh">Shell</span></div></div>
+          <pre>uvicorn server:app --host 0.0.0.0 --port 8000 --reload
+
+# Output:
+# ✅ NearPay server started
+# INFO: Uvicorn running on http://0.0.0.0:8000</pre>
+        </div>
+      </div>
+    </div>
+    <div class="install-step">
+      <div class="install-step-body">
+        <h4>Wire PN532 to ESP32-C3 and power up</h4>
+        <p>Connect 4 wires: GND→GND, 3.3V→VCC, GPIO8→SDA, GPIO9→SCL. Power the ESP32-C3 via USB. Watch the serial monitor — you should see the WiFi connection and PN532 initialization.</p>
+      </div>
+    </div>
+    <div class="install-step">
+      <div class="install-step-body">
+        <h4>Write a table ID to an NFC tag</h4>
+        <div class="code-wrap" style="margin-top:10px;">
+          <div class="code-header"><div class="code-filename"><span class="code-lang py">Python</span></div></div>
+          <pre><span class="c"># Run once to write URL to NTAG213 sticker</span>
+<span class="k">from</span> machine <span class="k">import</span> I2C, Pin
+<span class="k">from</span> pn532_i2c <span class="k">import</span> PN532_I2C
+
+i2c = I2C(<span class="num">0</span>, sda=Pin(<span class="num">8</span>), scl=Pin(<span class="num">9</span>), freq=<span class="num">100000</span>)
+nfc = PN532_I2C(i2c)
+nfc.SAM_configuration()
+
+url = <span class="s">b"http://192.168.1.100:8000/t/TABLE-12"</span>
+<span class="c"># Write NDEF URI record to tag (page 4+)</span>
+nfc.ntag2xx_write_block(<span class="num">4</span>, url[:<span class="num">4</span>])
+<span class="n">print</span>(<span class="s">"✅ Tag written!"</span>)</pre>
+        </div>
+      </div>
+    </div>
+    <div class="install-step">
+      <div class="install-step-body">
+        <h4>Open the dashboard and tap!</h4>
+        <p>Open <code>http://your-server-ip:8000/static/dashboard.html</code> on your manager device. Place a phone on the NFC badge — the order should appear in under 1 second.</p>
+        <div class="callout callout-ok" style="margin-top:10px;">
+          <div class="callout-icon">✅</div>
+          <div class="callout-text"><strong>Working!</strong> ESP32-C3 reads tag → POSTs to Python → Python broadcasts via WebSocket → Dashboard updates in real time → Customer phone opens payment page.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Project structure -->
+  <div class="code-wrap">
+    <div class="code-header">
+      <div class="code-filename">📁 Project Structure <span class="code-lang sh">Shell</span></div>
+    </div>
+    <pre>nearpay/
+├── esp32/                   <span class="c"># ESP32-C3 MicroPython</span>
+│   ├── main.py
+│   ├── pn532_i2c.py
+│   └── config.py
+├── server/                  <span class="c"># Python backend</span>
+│   ├── server.py
+│   ├── models.py
+│   ├── pos_mock.py
+│   ├── requirements.txt
+│   └── nearpay.db           <span class="c"># auto-created</span>
+└── static/                  <span class="c"># Frontend (served by FastAPI)</span>
+    ├── payment.html          <span class="c"># Customer payment page</span>
+    ├── dashboard.html        <span class="c"># Manager dashboard</span>
+    ├── kitchen.html          <span class="c"># KDS display</span>
+    └── manifest.json         <span class="c"># PWA manifest</span></pre>
+  </div>
+</div>
+
+<!-- Footer -->
+<div style="padding:40px 0 80px;text-align:center;color:var(--muted);font-size:12px;">
+  <div style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold);margin-bottom:8px;">NearPay DEV</div>
+  <p>ESP32-C3 + PN532 + Python + WebSocket + HTML/CSS/JS</p>
+  <div style="margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+    <a href="index.html" style="color:var(--gold);text-decoration:none;font-size:13px;">← Home</a>
+    <span>·</span>
+    <a href="how-it-works.html" style="color:var(--muted);text-decoration:none;font-size:13px;">How it works</a>
+    <span>·</span>
+    <a href="demo.html" style="color:var(--muted);text-decoration:none;font-size:13px;">Demo</a>
+  </div>
+</div>
+
+</main>
+</div><!-- /page -->
+
+<script>
+/* Tab switching */
+function switchTab(group, id){
+  document.querySelectorAll(`#${group}-tabs .ft`).forEach(t=>t.classList.remove('on'));
+  event.target.classList.add('on');
+  document.querySelectorAll(`[id^="${group}-"]`).forEach(p=>{
+    if(p.classList.contains('tab-content')) p.classList.remove('on');
+  });
+  document.getElementById(`${group}-${id}`).classList.add('on');
+}
+
+/* Copy code */
+function copyCode(btn){
+  const pre = btn.closest('.code-wrap').querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(()=>{
+    btn.textContent='Copied!';
+    setTimeout(()=>btn.textContent='Copy',2000);
+  });
+}
+
+/* Sidebar active link */
+const sections = document.querySelectorAll('.sec[id]');
+const sideLinks = document.querySelectorAll('.sb-link');
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      sideLinks.forEach(l=>l.classList.remove('active'));
+      const link = document.querySelector(`.sb-link[href="#${e.target.id}"]`);
+      if(link) link.classList.add('active');
+    }
+  });
+},{threshold:.3});
+sections.forEach(s=>io.observe(s));
+
+/* Scroll reveal */
+const fio = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting) e.target.classList.add('vis');});
+},{threshold:.06});
+document.querySelectorAll('.fi').forEach(el=>fio.observe(el));
+</script>
+</body>
+</html>

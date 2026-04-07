@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NearPay — 4 Scénarios</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07070F;--bg2:#0F0F1C;--bg3:#161626;--text:#F0EDE6;--muted:#8A8070;--ease:cubic-bezier(.4,0,.2,1);--sc:#C9A84C;--sc-d:#8B6914;--sc-l:#E8D5A3;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+.bismillah{text-align:center;padding:22px 20px 14px;font-family:'Amiri',serif;font-size:clamp(20px,3.5vw,40px);color:var(--sc);background:linear-gradient(180deg,rgba(255,255,255,.04),transparent);transition:color .6s;}
+.bismillah::after{content:'';display:block;width:80px;height:1px;background:linear-gradient(90deg,transparent,var(--sc),transparent);margin:10px auto 0;transition:background .6s;}
+nav{position:sticky;top:0;z-index:200;backdrop-filter:blur(20px);background:rgba(7,7,15,.9);border-bottom:1px solid rgba(255,255,255,.07);height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--sc);transition:color .6s;}
+.logo span{color:var(--text);}
+.back{font-size:12px;color:var(--muted);text-decoration:none;}
+.sc-rail{display:flex;align-items:center;justify-content:center;gap:6px;padding:18px 20px 0;flex-wrap:wrap;}
+.sc-pill{display:flex;align-items:center;gap:5px;padding:7px 14px;border-radius:50px;border:1px solid rgba(255,255,255,.1);background:transparent;color:var(--muted);font-size:12px;cursor:pointer;transition:all .35s var(--ease);font-family:'DM Sans',sans-serif;}
+.sc-pill.active{background:var(--sc);color:#000;font-weight:600;border-color:var(--sc);box-shadow:0 4px 20px rgba(0,0,0,.3);}
+.hero-txt{text-align:center;padding:24px 20px 12px;}
+.hero-txt h1{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4.5vw,54px);font-weight:700;line-height:1.1;margin-bottom:8px;}
+.hero-txt h1 em{color:var(--sc);font-style:italic;transition:color .6s;}
+.hero-txt p{color:var(--muted);font-size:13px;font-weight:300;}
+.stage{display:flex;flex-direction:column;align-items:center;gap:0;max-width:340px;margin:0 auto;padding:0 20px 20px;}
+.story-bar{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid rgba(255,255,255,.07);border-radius:60px;padding:7px 16px;font-size:12px;color:var(--muted);margin-bottom:20px;width:100%;justify-content:center;flex-wrap:wrap;}
+.story-avs{display:flex;}
+.s-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#fff;border:2px solid var(--bg2);margin-left:-7px;flex-shrink:0;transition:all .3s;}
+.s-av:first-child{margin-left:0;}
+.story-loc{font-size:11px;color:var(--sc);font-weight:500;transition:color .6s;}
+.step-trail{display:flex;align-items:center;background:var(--bg2);border:1px solid rgba(255,255,255,.07);border-radius:50px;padding:5px 12px;gap:0;overflow:hidden;margin-bottom:0;width:100%;justify-content:center;}
+.sd{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted);white-space:nowrap;}
+.sd.done{color:#22C55E;}.sd.active{color:var(--sc);}
+.sd-c{width:18px;height:18px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:8px;flex-shrink:0;}
+.sd.done .sd-c{background:#22C55E;border-color:#22C55E;color:#fff;}
+.sd.active .sd-c{background:var(--sc);border-color:var(--sc);color:#000;}
+.sd-sep{width:14px;height:1px;background:rgba(255,255,255,.08);margin:0 2px;}
+.iphone-wrap{position:relative;z-index:10;transition:transform .4s var(--ease);margin-top:16px;}
+.iphone-wrap.vibrating{animation:vibrate .45s ease;}
+.iphone{width:200px;height:410px;position:relative;border-radius:42px;background:linear-gradient(160deg,#2C2C2E,#1C1C1E,#2A2A2C);box-shadow:0 0 0 1px rgba(255,255,255,.12),0 0 0 3px #3A3A3C,0 0 0 4px rgba(255,255,255,.05),0 38px 90px rgba(0,0,0,.75);}
+.iphone::before{content:'';position:absolute;left:-5px;top:74px;width:3px;height:26px;background:linear-gradient(180deg,#444,#333);border-radius:2px 0 0 2px;box-shadow:0 38px 0 #3A3A3C,0 -24px 0 #3A3A3C;}
+.iphone::after{content:'';position:absolute;right:-5px;top:108px;width:3px;height:52px;background:linear-gradient(180deg,#444,#333);border-radius:0 2px 2px 0;}
+.iphone-screen{position:absolute;inset:9px;background:#000;border-radius:34px;overflow:hidden;}
+.iphone-screen::before{content:'';position:absolute;top:0;left:0;right:0;height:44%;background:linear-gradient(180deg,rgba(255,255,255,.04),transparent);z-index:100;pointer-events:none;border-radius:34px 34px 0 0;}
+.di{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:80px;height:22px;background:#000;border-radius:18px;z-index:50;transition:all .4s var(--ease);}
+.di.pop{width:172px;height:36px;background:#1A1A1A;}
+.di-inner{display:none;width:100%;height:100%;align-items:center;justify-content:center;gap:7px;padding:0 10px;}
+.di-inner.show{display:flex;}
+.di-ico{width:18px;height:18px;border-radius:5px;background:var(--sc);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#000;flex-shrink:0;transition:background .6s;}
+.di-txt{font-size:9px;color:#fff;font-weight:500;white-space:nowrap;}
+.statusbar{position:absolute;top:11px;left:16px;right:16px;display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,.6);z-index:40;}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s var(--ease);padding:38px 11px 11px;overflow:hidden;}
+.scr.show{opacity:1;pointer-events:all;}
+.scr-idle{background:radial-gradient(ellipse at 50% 25%,#1A1A2E,#000);}
+.idle-time{font-size:44px;font-weight:200;color:#fff;letter-spacing:-2px;margin-bottom:2px;}
+.idle-date{font-size:11px;color:rgba(255,255,255,.5);margin-bottom:18px;}
+.idle-icon{font-size:32px;color:rgba(255,255,255,.15);margin-bottom:8px;}
+.idle-hint{font-size:9px;color:rgba(255,255,255,.28);}
+.scr-notif{background:radial-gradient(ellipse at 50% 25%,#1A1A2E,#000);}
+.ios-notif{position:absolute;top:42px;left:7px;right:7px;background:rgba(40,40,42,.96);backdrop-filter:blur(20px);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:8px;animation:fromTop .4s var(--ease) both;border:1px solid rgba(255,255,255,.08);}
+.ni-ico{width:26px;height:26px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;background:transparent;}
+.ni-body{flex:1;}
+.ni-app{font-size:9px;color:rgba(255,255,255,.5);}
+.ni-title{font-size:11px;font-weight:600;color:#fff;line-height:1.3;}
+.ni-sub{font-size:10px;color:rgba(255,255,255,.5);}
+.scr-content{background:#F8F7F4;}
+.content-header{width:100%;padding:11px 12px 9px;background:var(--sc);display:flex;flex-direction:column;align-items:center;transition:background .6s;}
+.ch-emoji{font-size:16px;margin-bottom:1px;}
+.ch-title{font-size:12px;font-weight:700;color:rgba(0,0,0,.8);}
+.ch-sub{font-size:9px;color:rgba(0,0,0,.55);}
+.content-body{width:100%;flex:1;overflow-y:auto;padding:5px 11px;}
+.line-item{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#333;padding:5px 0;border-bottom:1px solid rgba(0,0,0,.06);}
+.line-item:last-child{border:none;}
+.li-label{flex:1;}
+.li-qty{color:#999;font-size:9px;margin-right:5px;}
+.li-price{font-weight:600;}
+.total-line{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:#111;padding:5px 11px 0;border-top:1px solid rgba(0,0,0,.1);}
+.action-area{padding:7px 9px 9px;display:flex;flex-direction:column;gap:5px;width:100%;}
+.a-btn{width:100%;padding:8px;border:none;border-radius:8px;font-size:10px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.a-btn-main{background:#000;color:#fff;}
+.a-btn-alt{background:#EEEAE0;color:#444;border:1px solid rgba(0,0,0,.1);}
+.scr-ap{background:#1C1C1E;}
+.ap-head{width:100%;text-align:center;padding:11px;border-bottom:1px solid rgba(255,255,255,.08);}
+.ap-logo{font-size:16px;color:#fff;margin-bottom:2px;}
+.ap-title{font-size:12px;font-weight:600;color:#fff;}
+.ap-merchant{font-size:9px;color:rgba(255,255,255,.4);}
+.ap-amount{font-size:30px;font-weight:300;color:#fff;text-align:center;padding:14px;}
+.ap-confirm{margin:0 12px;padding:10px;background:#fff;border:none;border-radius:9px;font-size:12px;font-weight:600;color:#000;cursor:pointer;font-family:'DM Sans',sans-serif;display:block;width:calc(100% - 24px);}
+.faceid{width:36px;height:36px;border-radius:50%;border:2px solid var(--sc);display:flex;align-items:center;justify-content:center;font-size:16px;margin:12px auto 4px;position:relative;transition:border-color .6s;}
+.faceid-ring{position:absolute;inset:0;border-radius:50%;border:2px solid #22C55E;animation:faceRing .7s var(--ease) both;opacity:0;}
+.faceid-lbl{font-size:9px;color:rgba(255,255,255,.35);text-align:center;margin-bottom:9px;}
+.scr-ok{background:radial-gradient(ellipse at 50% 35%,#0D2B1A,#000);}
+.ok-check{width:64px;height:64px;border-radius:50%;background:#22C55E;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:11px;animation:popIn .5s var(--ease) both;box-shadow:0 0 32px rgba(34,197,94,.4);}
+.ok-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:3px;}
+.ok-sub{font-size:10px;color:rgba(255,255,255,.5);margin-bottom:13px;text-align:center;padding:0 8px;}
+.stars{display:flex;gap:3px;}
+.star{font-size:18px;opacity:0;animation:starIn .3s var(--ease) both;}
+.star:nth-child(1){animation-delay:.1s;}.star:nth-child(2){animation-delay:.2s;}.star:nth-child(3){animation-delay:.3s;}.star:nth-child(4){animation-delay:.4s;}.star:nth-child(5){animation-delay:.5s;}
+.ok-ref{font-size:9px;color:rgba(255,255,255,.2);font-family:monospace;margin-top:8px;}
+.nfc-zone{height:60px;display:flex;align-items:center;justify-content:center;position:relative;width:100%;}
+.nfc-ring{position:absolute;width:40px;height:40px;border-radius:50%;border:2px solid var(--sc);opacity:0;transform:scale(.2);transition:border-color .6s;}
+.nfc-zone.on .nfc-ring{animation:ripple 1.4s var(--ease) infinite;}
+.nfc-zone.on .nfc-ring:nth-child(2){animation-delay:.3s;}.nfc-zone.on .nfc-ring:nth-child(3){animation-delay:.6s;}.nfc-zone.on .nfc-ring:nth-child(4){animation-delay:.9s;}
+.badge-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;}
+.badge{position:relative;overflow:hidden;cursor:pointer;transition:transform .3s var(--ease),box-shadow .3s var(--ease),border-radius .5s var(--ease),width .5s var(--ease),height .5s var(--ease);width:170px;height:104px;border-radius:15px;}
+.badge:hover{transform:scale(1.05);}
+.badge.wristband{width:196px;height:56px;border-radius:28px;}
+.badge.wristband-wide{width:200px;height:65px;border-radius:11px;}
+.badge.keycard{width:170px;height:104px;border-radius:7px;}
+.badge.rising{animation:rise .9s var(--ease) forwards;}
+.badge-bg{position:absolute;inset:0;transition:background .6s var(--ease);}
+.badge-sheen{position:absolute;inset:0;background:linear-gradient(105deg,transparent 25%,rgba(255,255,255,.4) 44%,rgba(255,255,255,.1) 50%,transparent 70%);animation:sheen 3s ease-in-out infinite;}
+.badge-inner{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;}
+.badge-logo{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:700;color:rgba(0,0,0,.75);}
+.badge-sym{font-size:15px;color:rgba(0,0,0,.45);}
+.badge-label{font-size:8px;color:rgba(0,0,0,.45);letter-spacing:.14em;}
+.badge-chip{position:absolute;bottom:9px;right:11px;width:20px;height:15px;border-radius:3px;border:1px solid rgba(0,0,0,.2);background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(0,0,0,.1));}
+.badge-chip::before,.badge-chip::after{content:'';position:absolute;background:rgba(0,0,0,.15);}
+.badge-chip::before{top:50%;left:0;right:0;height:1px;transform:translateY(-50%);}
+.badge-chip::after{left:50%;top:0;bottom:0;width:1px;transform:translateX(-50%);}
+.badge-glow{width:130px;height:9px;background:radial-gradient(ellipse,rgba(0,0,0,.3),transparent 70%);margin-top:-1px;transition:background .6s;}
+.tap-hint{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;transition:color .6s;}
+.hint-dot{width:6px;height:6px;border-radius:50%;background:var(--sc);animation:blink 1.5s ease infinite;transition:background .6s;}
+.narr{text-align:center;min-height:42px;font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--muted);padding:12px 16px 6px;transition:all .4s var(--ease);line-height:1.5;}
+.narr strong{color:var(--sc);transition:color .6s;}
+.next-hint{display:flex;align-items:center;justify-content:center;gap:8px;font-size:11px;color:var(--muted);padding-bottom:20px;}
+.next-arrow{color:var(--sc);transition:color .6s;font-size:14px;}
+.srv{position:fixed;bottom:20px;right:20px;background:var(--bg2);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:13px 15px;max-width:220px;transform:translateY(120px);opacity:0;transition:all .5s var(--ease);z-index:300;}
+.srv.show{transform:translateY(0);opacity:1;}
+.srv-head{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+.srv-ico{width:24px;height:24px;border-radius:6px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:12px;}
+.srv-app{font-size:9px;color:var(--muted);}
+.srv-title{font-size:11px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.srv-body{font-size:10px;color:var(--muted);line-height:1.5;}
+.srv-badge{margin-top:5px;padding:2px 7px;border-radius:50px;font-size:9px;display:inline-block;background:rgba(34,197,94,.12);color:#4ADE80;}
+.sc-flash{position:fixed;inset:0;background:var(--sc);opacity:0;pointer-events:none;z-index:999;transition:opacity .2s;}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:9999;}
+@keyframes fromTop{from{transform:translateY(-80px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+@keyframes vibrate{0%,100%{transform:translateX(0);}15%{transform:translateX(-5px) rotate(-.8deg);}30%{transform:translateX(5px) rotate(.8deg);}45%{transform:translateX(-4px);}60%{transform:translateX(4px);}75%{transform:translateX(-2px);}90%{transform:translateX(2px);}}
+@keyframes rise{0%{transform:translateY(0) scale(1);opacity:1;}50%{transform:translateY(-50px) scale(.88);}100%{transform:translateY(-78px) scale(.76);opacity:0;}}
+@keyframes sheen{0%{transform:translateX(-120%) skewX(-15deg);}55%{transform:translateX(220%) skewX(-15deg);}100%{transform:translateX(220%) skewX(-15deg);}}
+@keyframes ripple{0%{transform:scale(.2);opacity:.9;}100%{transform:scale(2.8);opacity:0;}}
+@keyframes popIn{0%{transform:scale(0);opacity:0;}70%{transform:scale(1.12);}100%{transform:scale(1);opacity:1;}}
+@keyframes starIn{0%{opacity:0;transform:scale(0) rotate(-30deg);}80%{transform:scale(1.2) rotate(5deg);}100%{opacity:1;transform:scale(1) rotate(0);}}
+@keyframes faceRing{0%{transform:scale(.4);opacity:1;}100%{transform:scale(1.5);opacity:0;}}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+@keyframes fall{0%{transform:translateY(0) rotate(0);opacity:1;}100%{transform:translateY(110vh) rotate(720deg);opacity:0;}}
+</style>
+</head>
+<body>
+
+<div class="bismillah" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+
+<nav>
+  <div class="logo">Near<span>Pay</span></div>
+  <a href="index.html" class="back">← Retour</a>
+</nav>
+
+<div class="sc-rail" id="scRail">
+  <div class="sc-pill active" onclick="jumpTo(0)">🍽️ Restaurant</div>
+  <div class="sc-pill" onclick="jumpTo(1)">🏖️ Beach Club</div>
+  <div class="sc-pill" onclick="jumpTo(2)">🎪 Festival</div>
+  <div class="sc-pill" onclick="jumpTo(3)">🏨 Hôtel 5★</div>
+</div>
+
+<div class="hero-txt">
+  <h1 id="heroTitle">Dîner <em id="heroEm">entre amis</em></h1>
+  <p id="heroSub">Table 7 · Mohamed & ses amis · Le Jardin d'Orient</p>
+</div>
+
+<div class="stage">
+  <div class="story-bar" id="storyBar">
+    <div class="story-avs" id="storyAvs"></div>
+    <div class="story-loc" id="storyLoc"></div>
+  </div>
+
+  <div class="step-trail" id="stepTrail">
+    <div class="sd active" id="st0"><div class="sd-c">1</div><span id="sl0">Tap</span></div>
+    <div class="sd-sep"></div>
+    <div class="sd" id="st1"><div class="sd-c">2</div><span id="sl1">Notif</span></div>
+    <div class="sd-sep"></div>
+    <div class="sd" id="st2"><div class="sd-c">3</div><span id="sl2">Détail</span></div>
+    <div class="sd-sep"></div>
+    <div class="sd" id="st3"><div class="sd-c">4</div><span id="sl3">Paiement</span></div>
+    <div class="sd-sep"></div>
+    <div class="sd" id="st4"><div class="sd-c">5</div><span id="sl4">Terminé</span></div>
+  </div>
+
+  <div class="iphone-wrap" id="iphoneWrap">
+    <div class="iphone">
+      <div class="iphone-screen">
+        <div class="di" id="di"><div class="di-inner" id="diInner"><div class="di-ico" id="diIco">N</div><div class="di-txt" id="diTxt">Prêt</div></div></div>
+        <div class="statusbar"><span id="scTime">21:47</span><span>📶 🔋</span></div>
+        <div class="scr scr-idle show" id="scrIdle">
+          <div class="idle-icon" id="idleIcon">🔒</div>
+          <div class="idle-time" id="idleTime">21:47</div>
+          <div class="idle-date" id="idleDate">Vendredi 7 mars</div>
+          <div class="idle-hint">Approchez le badge NearPay</div>
+        </div>
+        <div class="scr scr-notif" id="scrNotif">
+          <div class="ios-notif">
+            <div class="ni-ico" id="niIco">🍽️</div>
+            <div class="ni-body">
+              <div class="ni-app">NearPay · maintenant</div>
+              <div class="ni-title" id="niTitle">Votre addition est prête !</div>
+              <div class="ni-sub" id="niSub">Table 7 · 4 personnes · 147 €</div>
+            </div>
+          </div>
+          <div style="margin-top:52px;color:rgba(255,255,255,.12);font-size:10px;">Glissez pour ouvrir</div>
+        </div>
+        <div class="scr scr-content" id="scrContent">
+          <div class="content-header" id="contentHeader">
+            <div class="ch-emoji" id="chEmoji">🍽️</div>
+            <div class="ch-title" id="chTitle">Le Jardin d'Orient</div>
+            <div class="ch-sub" id="chSub">Table 7 · 4 personnes</div>
+          </div>
+          <div class="content-body" id="contentBody"></div>
+          <div class="total-line"><span>Total</span><span id="totalAmt">147 €</span></div>
+          <div class="action-area" id="actionArea"></div>
+        </div>
+        <div class="scr scr-ap" id="scrAp">
+          <div class="ap-head"><div class="ap-logo">💳</div><div class="ap-title" id="apTitle">Apple Pay</div><div class="ap-merchant" id="apMerchant">Le Jardin d'Orient</div></div>
+          <div class="ap-amount" id="apAmt">147 €</div>
+          <div class="faceid" id="faceId">🙂<div class="faceid-ring" id="faceRing"></div></div>
+          <div class="faceid-lbl">Double-cliquez et regardez</div>
+          <button class="ap-confirm" onclick="DEMO.confirmPay()">Confirmer le paiement</button>
+        </div>
+        <div class="scr scr-ok" id="scrOk">
+          <div class="ok-check">✓</div>
+          <div class="ok-title" id="okTitle">Paiement reçu !</div>
+          <div class="ok-sub" id="okSub">Merci Mohamed, à bientôt ! 👋</div>
+          <div class="stars"><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span><span class="star">⭐</span></div>
+          <div class="ok-ref" id="okRef">#NP-2025-07847</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nfc-zone" id="nfcZone"><div class="nfc-ring"></div><div class="nfc-ring"></div><div class="nfc-ring"></div><div class="nfc-ring"></div></div>
+
+  <div class="badge-wrap" onclick="DEMO.click()" id="badgeWrap">
+    <div class="badge" id="badge">
+      <div class="badge-bg" id="badgeBg"></div>
+      <div class="badge-sheen"></div>
+      <div class="badge-inner">
+        <div class="badge-logo">NearPay</div>
+        <div class="badge-sym" id="badgeSym">((•))</div>
+        <div class="badge-label" id="badgeLabel">TABLE 7</div>
+      </div>
+      <div class="badge-chip"></div>
+    </div>
+    <div class="badge-glow" id="badgeGlow"></div>
+    <div class="tap-hint"><div class="hint-dot" id="hintDot"></div><span id="hintTxt">Cliquez pour commencer</span></div>
+  </div>
+</div>
+
+<div class="narr" id="narr"></div>
+<div class="next-hint"><span class="next-arrow" id="nextArrow">→</span><span id="nextHint">Prochain : 🏖️ Beach Club</span></div>
+
+<div class="srv" id="srv">
+  <div class="srv-head"><div class="srv-ico" id="srvIco">🍽️</div><div class="srv-app">NearPay Serveur</div></div>
+  <div class="srv-title">📲 Notification reçue</div>
+  <div class="srv-body" id="srvBody">Table 7 · Paiement complet</div>
+  <div class="srv-badge" id="srvBadge">✅ Table libérée</div>
+</div>
+<div class="sc-flash" id="scFlash"></div>
+<div id="confetti"></div>
+
+<script>
+const SC=[
+  {emoji:'🍽️',name:'Restaurant',heroTitle:'Dîner ',heroEm:'entre amis',heroSub:'Table 7 · Mohamed & ses amis · Le Jardin d\'Orient',color:'#C9A84C',colorDark:'#8B6914',colorLight:'#E8D5A3',badgeShape:'',badgeBg:'linear-gradient(145deg,#5C3D00,#B8860B,#DAA520,#F5D060,#DAA520,#B8860B,#8B6914,#C9A84C,#E8D5A3,#C9A84C)',badgeLabel:'TABLE 7',badgeSym:'((•))',loc:'🍽️ Le Jardin d\'Orient — Table 7',idleIcon:'🔒',idleDate:'Vendredi 7 mars',idleTime:'21:47',avatars:[{l:'M',g:'linear-gradient(135deg,#C9A84C,#8B6914)'},{l:'S',g:'linear-gradient(135deg,#4CC9A8,#2A8B6B)'},{l:'K',g:'linear-gradient(135deg,#4C8EC9,#2A5A8B)'},{l:'L',g:'linear-gradient(135deg,#C94C8E,#8B2A5A)'}],steps:['Tap','Notif','Addition','Paiement','Terminé'],niTitle:'Votre addition est prête !',niSub:'Table 7 · 4 personnes · 147 €',niIco:'🍽️',diTxt:'Addition prête !',chEmoji:'🍽️',chTitle:'Le Jardin d\'Orient',chSub:'Table 7 · 4 personnes',items:[{n:'Houmous maison',q:'1×',p:'9 €'},{n:'Brick au thon',q:'1×',p:'11 €'},{n:'Tajine agneau',q:'1×',p:'24 €'},{n:'Couscous royal',q:'1×',p:'28 €'},{n:'Poisson chermoula',q:'1×',p:'26 €'},{n:'Thé à la menthe',q:'4×',p:'16 €'},{n:'Baklava',q:'4×',p:'13 €'}],total:'147 €',mainBtn:'🍎 Payer 147 € · Apple Pay',altBtn:'➗ Partager à 4 · 36,75€/pers',apTitle:'Apple Pay',apMerchant:'Le Jardin d\'Orient',apAmt:'147 €',okTitle:'Paiement reçu !',okSub:'Merci Mohamed, bonne soirée ! 👋',okRef:'#NP-2025-07847',srvIco:'🍽️',srvBody:'Table 7 · 147 € · 4 convives',srvBadge:'✅ Table libérée',narr:'Mohamed pose son téléphone sur le badge...',successNarr:'🎉 <strong>147 € encaissés</strong> en 1 geste. Table libérée. Serveur notifié. C\'est ça, NearPay.'},
+  {emoji:'🏖️',name:'Beach Club',heroTitle:'Journée ',heroEm:'au soleil',heroSub:'Nikki Beach Saint-Tropez · Transat B-14 · Nour & Yasmine',color:'#4CC9A8',colorDark:'#2A8B6B',colorLight:'#A8EDD8',badgeShape:'wristband',badgeBg:'linear-gradient(145deg,#1A5C4A,#2A8B6B,#4CC9A8,#A8EDD8,#4CC9A8,#2A8B6B)',badgeLabel:'NOUR',badgeSym:'〰〰〰',loc:'🏖️ Nikki Beach — Transat B-14',idleIcon:'🌊',idleDate:'Samedi 5 juillet',idleTime:'14:22',avatars:[{l:'N',g:'linear-gradient(135deg,#4CC9A8,#2A8B6B)'},{l:'Y',g:'linear-gradient(135deg,#F97316,#C2410C)'}],steps:['Activation','Commande','Extras','Sortie','Payé'],niTitle:'Bracelet activé, Nour !',niSub:'Transat B-14 · Solde : 200 €',niIco:'🏖️',diTxt:'Bracelet actif !',chEmoji:'🌊',chTitle:'Nikki Beach',chSub:'Transat B-14 · Nour',items:[{n:'Rosé Provence 75cl',q:'1×',p:'38 €'},{n:'Plateau fruits de mer',q:'1×',p:'65 €'},{n:'Daiquiri fraise',q:'2×',p:'28 €'},{n:'Salade niçoise',q:'1×',p:'22 €'},{n:'Crème solaire SPF50',q:'1×',p:'18 €'},{n:'Eau pétillante',q:'2×',p:'12 €'}],total:'183 €',mainBtn:'🤙 Payer avec le bracelet',altBtn:'➗ Nour & Yasmine · 91,50€/pers',apTitle:'Paiement bracelet',apMerchant:'Nikki Beach · Transat B-14',apAmt:'183 €',okTitle:'Brillante journée !',okSub:'Merci Nour, à très vite ! ☀️',okRef:'#NP-BEACH-03291',srvIco:'🏖️',srvBody:'Transat B-14 · 183 € · Nour',srvBadge:'✅ Transat libéré',narr:'Nour approche son bracelet du lecteur...',successNarr:'☀️ <strong>183 € réglés</strong> avec le bracelet. Nour et Yasmine quittent la plage sans passer à la caisse.'},
+  {emoji:'🎪',name:'Festival',heroTitle:'Oasis ',heroEm:'Festival',heroSub:'Bracelet VIP · Yasmine · Bar, food trucks, boutique, scène',color:'#F97316',colorDark:'#C2410C',colorLight:'#FDBA74',badgeShape:'wristband-wide',badgeBg:'linear-gradient(145deg,#7C1D00,#C2410C,#F97316,#FDBA74,#F97316,#C2410C)',badgeLabel:'YASMINE · VIP',badgeSym:'♪ ♫ ♪',loc:'🎪 Oasis Festival — Scène principale',idleIcon:'🎵',idleDate:'Vendredi 25 juillet',idleTime:'22:15',avatars:[{l:'Y',g:'linear-gradient(135deg,#F97316,#C2410C)'}],steps:['Entrée','Bar','Food','Recharge','Sortie'],niTitle:'50 € rechargés par maman !',niSub:'Nouveau solde : 87 € · Bracelet VIP',niIco:'🎪',diTxt:'Recharge reçue !',chEmoji:'🎪',chTitle:'Oasis Festival',chSub:'Yasmine · Bracelet VIP · Solde 87 €',items:[{n:'Mojito (Bar Stand A)',q:'3×',p:'24 €'},{n:'Burger smash',q:'1×',p:'14 €'},{n:'Frites',q:'1×',p:'5 €'},{n:'Eau fraîche',q:'4×',p:'12 €'},{n:'T-shirt Oasis 2025',q:'1×',p:'32 €'}],total:'87 €',mainBtn:'🎶 Payer avec mon bracelet',altBtn:'📲 Voir mes dépenses du soir',apTitle:'Sortie Festival',apMerchant:'Oasis Festival · Porte de sortie',apAmt:'87 €',okTitle:'La fête continue !',okSub:'Merci Yasmine ! 🎶 Reviens l\'année prochaine.',okRef:'#NP-FEST-09182',srvIco:'🎪',srvBody:'Bar+FoodTruck+Boutique · 87€',srvBadge:'✅ Bracelet désactivé à la sortie',narr:'Yasmine tape son bracelet pour sortir du festival...',successNarr:'🎶 <strong>87 € dépensés</strong> librement. Pas un euro en espèces. Zéro file d\'attente. La mère de Yasmine a rechargé à distance.'},
+  {emoji:'🏨',name:'Hôtel 5★',heroTitle:'Séjour ',heroEm:'d\'exception',heroSub:'Le Meurice Paris · Chambre 302 · Karim Mansouri',color:'#A78BFA',colorDark:'#6D28D9',colorLight:'#DDD6FE',badgeShape:'keycard',badgeBg:'linear-gradient(145deg,#1E1035,#4C1D95,#7C3AED,#A78BFA,#7C3AED,#4C1D95)',badgeLabel:'CHAMBRE 302',badgeSym:'✦ Le Meurice',loc:'🏨 Le Meurice Paris — Ch. 302',idleIcon:'🗝️',idleDate:'Dimanche 9 mars',idleTime:'11:00',avatars:[{l:'K',g:'linear-gradient(135deg,#A78BFA,#6D28D9)'}],steps:['Clé activée','Spa','Restaurant','Room svc','Check-out'],niTitle:'Check-out prêt, M. Mansouri',niSub:'Chambre 302 · Total séjour : 2 840 €',niIco:'🏨',diTxt:'Check-out prêt',chEmoji:'🏨',chTitle:'Le Meurice Paris',chSub:'Folio chambre 302 · Karim Mansouri',items:[{n:'Chambre Deluxe (2 nuits)',q:'',p:'1 800 €'},{n:'Spa — massage signature',q:'',p:'280 €'},{n:'Dîner au restaurant',q:'',p:'340 €'},{n:'Room service (x2)',q:'',p:'120 €'},{n:'Minibar',q:'',p:'95 €'},{n:'Pressing',q:'',p:'65 €'},{n:'Parking voiturier',q:'',p:'140 €'}],total:'2 840 €',mainBtn:'🗝️ Régler avec ma clé · Apple Pay',altBtn:'📄 Facture par email',apTitle:'Check-out · Le Meurice',apMerchant:'Le Meurice Paris · Ch. 302',apAmt:'2 840 €',okTitle:'Au revoir M. Mansouri',okSub:'Votre facture a été envoyée. À très bientôt. 🌟',okRef:'#NP-MEURICE-00302',srvIco:'🏨',srvBody:'Chambre 302 · 2840€ · Karim M.',srvBadge:'✅ Chambre libérée · Clé désactivée',narr:'Karim présente sa clé de chambre au check-out...',successNarr:'🌟 <strong>2 840 € réglés</strong> avec la clé de chambre. Pas de queue. Un séjour d\'exception jusqu\'au dernier instant.'}
+];
+
+const DEMO={
+  sc:0,busy:false,
+  get S(){return SC[this.sc];},
+  el(id){return document.getElementById(id);},
+
+  applyTheme(s){
+    document.documentElement.style.setProperty('--sc',s.color);
+    document.documentElement.style.setProperty('--sc-d',s.colorDark);
+    document.documentElement.style.setProperty('--sc-l',s.colorLight);
+    this.el('heroTitle').innerHTML=s.heroTitle+'<em id="heroEm">'+s.heroEm+'</em>';
+    this.el('heroSub').textContent=s.heroSub;
+    this.el('storyAvs').innerHTML=s.avatars.map(a=>`<div class="s-av" style="background:${a.g}">${a.l}</div>`).join('');
+    this.el('storyLoc').textContent=s.loc;
+    s.steps.forEach((l,i)=>this.el('sl'+i).textContent=l);
+    const badge=this.el('badge');
+    badge.className='badge'+(s.badgeShape?' '+s.badgeShape:'');
+    this.el('badgeBg').style.background=s.badgeBg;
+    this.el('badgeLabel').textContent=s.badgeLabel;
+    this.el('badgeSym').textContent=s.badgeSym;
+    this.el('badgeGlow').style.background=`radial-gradient(ellipse,${s.color}33,transparent 70%)`;
+    this.el('hintDot').style.background=s.color;
+    this.el('idleIcon').textContent=s.idleIcon;
+    this.el('idleDate').textContent=s.idleDate;
+    this.el('idleTime').textContent=s.idleTime;
+    this.el('scTime').textContent=s.idleTime;
+    this.el('niIco').textContent=s.niIco;
+    this.el('niTitle').textContent=s.niTitle;
+    this.el('niSub').textContent=s.niSub;
+    this.el('diIco').style.background=s.color;
+    this.el('diTxt').textContent=s.diTxt;
+    this.el('contentHeader').style.background=s.color;
+    this.el('chEmoji').textContent=s.chEmoji;
+    this.el('chTitle').textContent=s.chTitle;
+    this.el('chSub').textContent=s.chSub;
+    this.el('contentBody').innerHTML=s.items.map(it=>`<div class="line-item"><span class="li-qty">${it.q}</span><span class="li-label">${it.n}</span><span class="li-price">${it.p}</span></div>`).join('');
+    this.el('totalAmt').textContent=s.total;
+    this.el('actionArea').innerHTML=`<button class="a-btn a-btn-main" onclick="DEMO.paySolo()">${s.mainBtn}</button><button class="a-btn a-btn-alt" onclick="DEMO.paySolo()">${s.altBtn}</button>`;
+    this.el('apTitle').textContent=s.apTitle;
+    this.el('apMerchant').textContent=s.apMerchant;
+    this.el('apAmt').textContent=s.apAmt;
+    this.el('okTitle').textContent=s.okTitle;
+    this.el('okSub').textContent=s.okSub;
+    this.el('okRef').textContent=s.okRef;
+    this.el('srvIco').textContent=s.srvIco;
+    this.el('srvBody').textContent=s.srvBody;
+    this.el('srvBadge').textContent=s.srvBadge;
+    document.querySelectorAll('.sc-pill').forEach((p,i)=>p.classList.toggle('active',i===this.sc));
+    const next=SC[(this.sc+1)%4];
+    this.el('nextHint').textContent=`Prochain : ${next.emoji} ${next.name}`;
+    this.el('nextArrow').style.color=s.color;
+    this.narr(s.emoji+' '+s.narr+' <strong>Cliquez !</strong>');
+  },
+
+  transitionTo(idx){
+    const flash=this.el('scFlash');
+    flash.style.background=SC[idx].color;
+    flash.style.opacity='.15';
+    setTimeout(()=>flash.style.opacity='0',280);
+    this.sc=idx;this.busy=false;
+    this.resetState();
+    this.applyTheme(SC[idx]);
+  },
+
+  click(){
+    if(this.busy){this.sc=(this.sc+1)%4;this.transitionTo(this.sc);return;}
+    this.start();
+  },
+
+  resetState(){
+    this.showScr('scrIdle');this.setStep(-1);
+    this.el('nfcZone').classList.remove('on');
+    this.el('badge').classList.remove('rising');
+    this.el('badge').style.opacity='1';
+    this.el('iphoneWrap').classList.remove('vibrating');
+    this.el('di').classList.remove('pop');
+    this.el('diInner').classList.remove('show');
+    this.el('srv').classList.remove('show');
+    this.el('faceRing').style.animation='none';
+    this.el('hintTxt').textContent='Cliquez pour commencer';
+    for(let i=0;i<5;i++)this.el('st'+i).className='sd';
+    this.el('st0').className='sd active';
+  },
+
+  start(){
+    this.busy=true;
+    this.el('hintTxt').textContent='Cliquez pour changer de scénario →';
+    this.el('badge').classList.add('rising');
+    setTimeout(()=>this.el('badge').style.opacity='0',600);
+    this.el('nfcZone').classList.add('on');
+    setTimeout(()=>{this.el('iphoneWrap').classList.add('vibrating');setTimeout(()=>this.el('iphoneWrap').classList.remove('vibrating'),500);},420);
+    this.narr('📡 Lecture en cours... '+this.S.emoji);
+    this.setStep(0);
+    setTimeout(()=>{this.el('nfcZone').classList.remove('on');this.showNotif();},1400);
+  },
+
+  showNotif(){
+    this.showScr('scrNotif');
+    this.el('di').classList.add('pop');
+    this.el('diInner').classList.add('show');
+    this.setStep(1);
+    this.narr('📳 <strong>'+this.S.niTitle+'</strong>');
+    setTimeout(()=>{this.el('di').classList.remove('pop');this.el('diInner').classList.remove('show');this.showContent();},2400);
+  },
+
+  showContent(){
+    this.showScr('scrContent');
+    this.setStep(2);
+    this.narr('🧾 Détail complet. Payer seul ou partager ?');
+  },
+
+  paySolo(){
+    this.showScr('scrAp');
+    this.setStep(3);
+    this.narr('💳 '+this.S.apTitle+' — Confirmez...');
+    setTimeout(()=>this.el('faceRing').style.animation='faceRing .7s ease both',700);
+  },
+
+  confirmPay(){
+    this.showScr('scrOk');
+    this.setStep(4);
+    this.narr(this.S.successNarr);
+    this.celebrate();
+    setTimeout(()=>{this.el('srv').classList.add('show');setTimeout(()=>this.el('srv').classList.remove('show'),4500);},900);
+    setTimeout(()=>{if(this.busy){this.sc=(this.sc+1)%4;this.transitionTo(this.sc);}},5500);
+  },
+
+  celebrate(){
+    const c=this.el('confetti');
+    const cols=[this.S.color,this.S.colorLight,'#fff','#22C55E'];
+    for(let i=0;i<75;i++){
+      setTimeout(()=>{
+        const el=document.createElement('div');const sz=Math.random()*9+4;
+        el.style.cssText=`position:fixed;left:${Math.random()*100}%;top:-12px;width:${sz}px;height:${sz}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${Math.random()>.5?'50%':'3px'};animation:fall ${1.3+Math.random()*.9}s ease-in forwards;`;
+        c.appendChild(el);setTimeout(()=>el.remove(),3400);
+      },Math.random()*900);
+    }
+  },
+
+  showScr(id){['scrIdle','scrNotif','scrContent','scrAp','scrOk'].forEach(s=>this.el(s).classList.remove('show'));this.el(id).classList.add('show');},
+  setStep(a){for(let i=0;i<5;i++){const el=this.el('st'+i);el.className='sd'+(i<a?' done':i===a?' active':'');}},
+  narr(t){this.el('narr').innerHTML=t;}
+};
+
+function jumpTo(idx){
+  if(idx===DEMO.sc&&!DEMO.busy)return;
+  DEMO.transitionTo(idx);
+}
+
+window.addEventListener('load',()=>{DEMO.applyTheme(SC[0]);DEMO.resetState();});
+</script>
+</body>
+</html>

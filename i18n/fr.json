@@ -1,0 +1,88 @@
+{
+  "lang": "fr",
+  "meta": {
+    "title": "NearPay — Le paiement à portée de main",
+    "description": "NearPay transforme le paiement en restaurant. Approchez votre téléphone, payez en un geste."
+  },
+  "nav": {
+    "help": "Aide",
+    "faq": "FAQ",
+    "wiki": "Wiki",
+    "settings": "Paramètres",
+    "mode_pro": "Professionnel",
+    "mode_client": "Client"
+  },
+  "hero": {
+    "pill_pro": "Solution pour professionnels de la restauration",
+    "pill_client": "Payez votre addition en un geste — sans appli",
+    "title_line1": "Le paiement",
+    "title_line2": "à portée de main",
+    "sub_pro": "Transformez l'expérience de paiement dans votre établissement. Vos clients paient en un geste, sans attendre.",
+    "sub_client": "Approchez votre téléphone, voyez l'addition, payez et partez. Sans attendre. Sans application.",
+    "hint": "Touchez le badge pour voir la démo",
+    "cta_pro": "Découvrir les fonctionnalités",
+    "cta_client": "Comment ça marche"
+  },
+  "how": {
+    "tag": "Simple",
+    "title": "Comment ça marche ?",
+    "sub_pro": "En 3 étapes, transformez votre service de paiement",
+    "sub_client": "En 3 gestes, payez sans jamais attendre",
+    "steps_pro": [
+      { "icon": "🏷️", "title": "Poser le badge", "desc": "Un badge NearPay sur chaque table. Le serveur l'associe à la commande dès l'arrivée du client." },
+      { "icon": "☕", "title": "Le service continue", "desc": "Chaque commande s'ajoute automatiquement à la note de la table. Aucune saisie supplémentaire." },
+      { "icon": "💰", "title": "Encaissement instantané", "desc": "Le client paie seul depuis son téléphone. La table se libère plus vite." }
+    ],
+    "steps_client": [
+      { "icon": "📱", "title": "Approcher", "desc": "Posez votre téléphone sur le petit badge doré sur votre table. Pas besoin d'application." },
+      { "icon": "👀", "title": "Voir l'addition", "desc": "Votre addition complète s'affiche sur votre téléphone en moins d'une seconde." },
+      { "icon": "✅", "title": "Payer et partir", "desc": "Apple Pay, Google Pay ou carte bancaire. Payez en 1 seconde et quittez sans attendre." }
+    ]
+  },
+  "modes": {
+    "tag": "Flexible",
+    "title": "3 façons d'utiliser NearPay",
+    "sub": "Aucune application à installer. Votre téléphone suffit.",
+    "items": [
+      { "icon": "📱", "title": "Téléphone → Badge", "desc": "Le client pose son téléphone sur le badge. L'addition apparaît instantanément." },
+      { "icon": "🏷️", "title": "Badge → Serveur", "desc": "Le serveur approche le badge de son propre téléphone. Encaissement classique." },
+      { "icon": "🔗", "title": "QR Code ou SMS", "desc": "Un QR code ou un lien SMS donne accès à la même expérience." }
+    ]
+  },
+  "genius": {
+    "tag": "Innovation",
+    "title": "9 idées géniales",
+    "sub": "NearPay va bien au-delà du simple paiement.",
+    "btn_more": "En savoir plus",
+    "btn_less": "Réduire"
+  },
+  "stats": {
+    "tag": "Résultats",
+    "title": "L'impact sur votre business",
+    "items": [
+      { "value": "-3min", "label": "par table en moyenne" },
+      { "value": "+20%", "label": "de rotation des tables" },
+      { "value": "98%", "label": "de satisfaction client" },
+      { "value": "0", "label": "application à installer" }
+    ]
+  },
+  "cta": {
+    "title_pro": "Prêt à transformer votre établissement ?",
+    "desc_pro": "Rejoignez les établissements qui ont choisi NearPay. Installation en moins d'une heure.",
+    "primary_pro": "Équiper mon établissement",
+    "secondary_pro": "Voir une démo live",
+    "title_client": "Essayez NearPay dès ce soir",
+    "desc_client": "De plus en plus de restaurants adoptent NearPay.",
+    "primary_client": "Trouver un restaurant NearPay",
+    "secondary_client": "En savoir plus"
+  },
+  "footer": {
+    "tagline": "Le paiement à portée de main",
+    "langs": {
+      "fr": "Français",
+      "en": "English — bientôt",
+      "es": "Español — bientôt",
+      "ar": "عربي — bientôt"
+    }
+  }
+}
